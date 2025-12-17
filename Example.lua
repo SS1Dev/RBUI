@@ -34,11 +34,20 @@ local Panel = UIFramework.CreatePanel({
     Title = "🎮 Game Panel",
     Size = UDim2.new(0, 700, 0, 450),
     Theme = "Dark", -- Set default theme: Dark, Light, Pink, Blue, Golden, DarkBlue, DarkPink, DarkGolden, LightPink, LightGolden, LightBlue
+    Resizable = true, -- Enable resize (drag bottom-right corner)
+    MinWidth = 500,   -- Minimum panel width
+    MinHeight = 350,  -- Minimum panel height
+    Transparency = 0, -- Main panel transparency (0 = opaque, 1 = fully transparent)
+    -- HeaderTransparency = 0.1,  -- Optional: separate header transparency
+    -- SidebarTransparency = 0.1, -- Optional: separate sidebar transparency
     OnClose = function()
         print("Panel closed!")
     end,
     OnMinimize = function(minimized)
         print("Panel minimized:", minimized)
+    end,
+    OnResize = function(newSize)
+        print("Panel resized to:", newSize.X.Offset, "x", newSize.Y.Offset)
     end
 })
 
@@ -198,6 +207,21 @@ UIFramework.Dropdown.new({
             Message = "Theme set to: " .. value,
             Duration = 2
         })
+    end
+})
+
+-- Panel transparency slider
+UIFramework.Slider.new({
+    Text = "Panel Transparency",
+    Icon = "eye",
+    Value = 0,
+    Min = 0,
+    Max = 0.8,
+    Step = 0.1,
+    Decimals = 1,
+    Parent = settingsTab,
+    OnChange = function(value)
+        Panel:SetTransparency(value)
     end
 })
 
@@ -557,7 +581,13 @@ local checkboxes = {
     { text = "Allow Trading", icon = "exchange", value = false },
     { text = "Enable Chat", icon = "comments", value = true },
     { text = "Show Player List", icon = "users", value = true },
-    { text = "Enable Spectator Mode", icon = "eye", value = false }
+    { text = "Enable Spectator Mode", icon = "eye", value = false },
+    { text = "Auto-Save Progress", icon = "save", value = true },
+    { text = "Show Minimap", icon = "map", value = true },
+    { text = "Enable Particles", icon = "star", value = false },
+    { text = "Show Damage Numbers", icon = "bolt", value = true },
+    { text = "Enable Controller Support", icon = "gamepad", value = false },
+    { text = "Show FPS Counter", icon = "chart-line", value = false }
 }
 
 for _, cb in ipairs(checkboxes) do
@@ -652,10 +682,17 @@ UIFramework.Label.new({
     Parent = aboutTab
 })
 
+UIFramework.Label.new({
+    Text = "⬇ Scroll down to see more features (auto scrollbar)",
+    Icon = "chevron-down",
+    TextColor = UIFramework.Theme.Colors.TextMuted,
+    Parent = aboutTab
+})
+
 UIFramework.CreateSpacer({ Parent = aboutTab })
 
 local features = {
-    { icon = "cube", text = "Container - Admin panel with sidebar navigation" },
+    { icon = "cube", text = "Container - Panel with sidebar navigation" },
     { icon = "font", text = "Label - Text display with icon support" },
     { icon = "keyboard", text = "Input - Text input with validation" },
     { icon = "hand-pointer", text = "Button - Multiple variants and states" },
@@ -663,7 +700,10 @@ local features = {
     { icon = "sliders", text = "Slider - Range selection" },
     { icon = "square-check", text = "Checkbox - Multi-select options" },
     { icon = "list", text = "Dropdown - Single and multiple selection" },
-    { icon = "folder", text = "Tab - Navigation component" }
+    { icon = "folder", text = "Tab - Navigation component" },
+    { icon = "expand", text = "Resizable - Drag corner to resize panel" },
+    { icon = "eye", text = "Transparency - Configurable panel transparency" },
+    { icon = "palette", text = "Themes - 11 built-in color themes" }
 }
 
 UIFramework.CreateSection({
@@ -746,6 +786,42 @@ UIFramework.Button.new({
             Message = "Here's some useful information."
         })
     end
+})
+
+UIFramework.CreateSpacer({ Parent = aboutTab })
+
+UIFramework.CreateSection({
+    Text = "Tips & Tricks",
+    Icon = "bolt",
+    Parent = aboutTab
+})
+
+local tips = {
+    "🎨 Change themes from the Settings tab",
+    "📐 Drag the bottom-right corner to resize the panel",
+    "🔍 Use searchable dropdowns for large option lists",
+    "⌨️ Press Enter to submit input fields",
+    "📜 Content auto-scrolls when it exceeds the viewport",
+    "🎯 Minimize the panel by clicking the minimize button",
+    "💾 All settings can have callbacks for real-time updates",
+    "🔔 Use notifications to provide user feedback",
+    "👁 Adjust panel transparency in Settings tab"
+}
+
+for _, tip in ipairs(tips) do
+    UIFramework.Label.new({
+        Text = tip,
+        TextColor = UIFramework.Theme.Colors.TextSecondary,
+        Parent = aboutTab
+    })
+end
+
+UIFramework.CreateSpacer({ Parent = aboutTab })
+
+UIFramework.Label.new({
+    Text = "Made with ❤️ for the Roblox community",
+    TextColor = UIFramework.Theme.Colors.TextMuted,
+    Parent = aboutTab
 })
 
 -- Done!

@@ -131,6 +131,84 @@ function Container:_Build()
     end
 end
 
+-- Build resize handle (bottom-right corner)
+function Container:_BuildResizeHandle()
+    local UserInputService = game:GetService("UserInputService")
+    
+    -- Resize handle
+    self.ResizeHandle = Utilities.Create("TextButton", {
+        Name = "ResizeHandle",
+        Size = UDim2.new(0, 20, 0, 20),
+        Position = UDim2.new(1, -20, 1, -20),
+        BackgroundTransparency = 1,
+        Text = "",
+        AutoButtonColor = false,
+        ZIndex = 10,
+        Parent = self.Frame
+    })
+    
+    -- Resize icon (diagonal lines)
+    local resizeIcon = Utilities.Create("TextLabel", {
+        Name = "Icon",
+        Size = UDim2.new(1, 0, 1, 0),
+        BackgroundTransparency = 1,
+        Text = "⋰",
+        TextColor3 = Theme.Colors.TextMuted,
+        TextSize = 16,
+        Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Right,
+        TextYAlignment = Enum.TextYAlignment.Bottom,
+        Parent = self.ResizeHandle
+    })
+    
+    -- Resize logic
+    local resizing = false
+    local startPos = nil
+    local startSize = nil
+    
+    self.ResizeHandle.MouseEnter:Connect(function()
+        Utilities.Tween(resizeIcon, { TextColor3 = Theme.Colors.Primary }, 0.15)
+    end)
+    
+    self.ResizeHandle.MouseLeave:Connect(function()
+        if not resizing then
+            Utilities.Tween(resizeIcon, { TextColor3 = Theme.Colors.TextMuted }, 0.15)
+        end
+    end)
+    
+    self.ResizeHandle.MouseButton1Down:Connect(function()
+        resizing = true
+        startPos = UserInputService:GetMouseLocation()
+        startSize = self.Frame.Size
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if resizing and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local currentPos = UserInputService:GetMouseLocation()
+            local delta = currentPos - startPos
+            
+            local newWidth = math.max(self.MinWidth, startSize.X.Offset + delta.X)
+            local newHeight = math.max(self.MinHeight, startSize.Y.Offset + delta.Y)
+            
+            self.Frame.Size = UDim2.new(0, newWidth, 0, newHeight)
+        end
+    end)
+    
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if resizing then
+                resizing = false
+                Utilities.Tween(resizeIcon, { TextColor3 = Theme.Colors.TextMuted }, 0.15)
+                
+                -- Call OnResize callback
+                if self.OnResize then
+                    self.OnResize(self.Frame.Size)
+                end
+            end
+        end
+    end)
+end
+
 -- Build header section
 function Container:_BuildHeader()
     self.Header = Utilities.Create("Frame", {
