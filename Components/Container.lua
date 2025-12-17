@@ -129,9 +129,9 @@ function Container:_Build()
     -- Content Area
     self:_BuildContentArea()
     
-    -- Make draggable
+    -- Make draggable (from anywhere on the panel)
     if self.Draggable then
-        Utilities.MakeDraggable(self.Frame, self.Header)
+        Utilities.MakeDraggable(self.Frame, self.Frame)
     end
 end
 
@@ -193,10 +193,10 @@ function Container:_BuildHeader()
         Parent = self.Header
     })
     
-    -- Window Controls Container
+    -- Window Controls Container (macOS style)
     local controlsContainer = Utilities.Create("Frame", {
         Name = "Controls",
-        Size = UDim2.new(0, 60, 0, 24),
+        Size = UDim2.new(0, 50, 0, 16),
         Position = UDim2.new(1, -Theme.Spacing.MD, 0.5, 0),
         AnchorPoint = Vector2.new(1, 0.5),
         BackgroundTransparency = 1,
@@ -206,60 +206,60 @@ function Container:_BuildHeader()
     Utilities.ApplyListLayout(controlsContainer, {
         Direction = Enum.FillDirection.Horizontal,
         HorizontalAlignment = Enum.HorizontalAlignment.Right,
+        VerticalAlignment = Enum.VerticalAlignment.Center,
         Padding = Theme.Spacing.SM
     })
     
-    -- Minimize Button
+    -- Minimize Button (White circle)
     if self.Minimizable then
-        local minimizeBtn = self:_CreateWindowControl("minus", function()
-            self:ToggleMinimize()
-        end)
-        minimizeBtn.Parent = controlsContainer
+        self.MinimizeBtn = self:_CreateCircleButton(
+            Color3.fromRGB(255, 255, 255), -- White
+            function() self:ToggleMinimize() end
+        )
+        self.MinimizeBtn.Name = "MinimizeButton"
+        self.MinimizeBtn.LayoutOrder = 1
+        self.MinimizeBtn.Parent = controlsContainer
     end
     
-    -- Close Button
+    -- Close Button (Red circle)
     if self.Closable then
-        local closeBtn = self:_CreateWindowControl("xmark", function()
-            self:Close()
-        end, Theme.Colors.Error)
-        closeBtn.Parent = controlsContainer
+        self.CloseBtn = self:_CreateCircleButton(
+            Color3.fromRGB(255, 95, 87), -- Red
+            function() self:Close() end
+        )
+        self.CloseBtn.Name = "CloseButton"
+        self.CloseBtn.LayoutOrder = 2
+        self.CloseBtn.Parent = controlsContainer
     end
 end
 
--- Create window control button
-function Container:_CreateWindowControl(iconName, callback, hoverColor)
+-- Create circular window control button (macOS style)
+function Container:_CreateCircleButton(color, callback)
+    local size = 14
+    
     local btn = Utilities.Create("TextButton", {
-        Name = iconName .. "Button",
-        Size = UDim2.new(0, 24, 0, 24),
-        BackgroundColor3 = Theme.Colors.BackgroundTertiary,
+        Size = UDim2.new(0, size, 0, size),
+        BackgroundColor3 = color,
         BorderSizePixel = 0,
         Text = "",
         AutoButtonColor = false
     })
     
-    local iconImg = Icons.CreateLabel(iconName, 14, Theme.Colors.TextSecondary)
-    iconImg.Position = UDim2.new(0.5, 0, 0.5, 0)
-    iconImg.AnchorPoint = Vector2.new(0.5, 0.5)
-    iconImg.Parent = btn
+    Utilities.ApplyCorner(btn, Theme.BorderRadius.Full)
     
-    Utilities.ApplyCorner(btn, Theme.BorderRadius.MD)
+    -- Subtle border
+    Utilities.ApplyStroke(btn, {
+        Color = Color3.fromRGB(0, 0, 0),
+        Thickness = 1,
+        Transparency = 0.8
+    })
     
     btn.MouseEnter:Connect(function()
-        Utilities.Tween(btn, {
-            BackgroundColor3 = hoverColor or Theme.Colors.Primary
-        })
-        Utilities.Tween(iconImg, {
-            TextColor3 = Theme.Colors.TextPrimary
-        })
+        Utilities.Tween(btn, { BackgroundTransparency = 0.2 }, 0.1)
     end)
     
     btn.MouseLeave:Connect(function()
-        Utilities.Tween(btn, {
-            BackgroundColor3 = Theme.Colors.BackgroundTertiary
-        })
-        Utilities.Tween(iconImg, {
-            TextColor3 = Theme.Colors.TextSecondary
-        })
+        Utilities.Tween(btn, { BackgroundTransparency = 0 }, 0.1)
     end)
     
     btn.Activated:Connect(callback)
@@ -267,19 +267,17 @@ function Container:_CreateWindowControl(iconName, callback, hoverColor)
     return btn
 end
 
--- Build resize handle
+-- Build resize handle (invisible, just for resizing)
 function Container:_BuildResizeHandle()
     local UserInputService = game:GetService("UserInputService")
     
     self.ResizeHandle = Utilities.Create("TextButton", {
         Name = "ResizeHandle",
-        Size = UDim2.new(0, 20, 0, 20),
-        Position = UDim2.new(1, -20, 1, -20),
+        Size = UDim2.new(0, 16, 0, 16),
+        Position = UDim2.new(1, 0, 1, 0),
+        AnchorPoint = Vector2.new(1, 1),
         BackgroundTransparency = 1,
-        Text = "⋱",
-        TextColor3 = Theme.Colors.TextMuted,
-        TextSize = 14,
-        Font = Enum.Font.GothamBold,
+        Text = "",
         ZIndex = 100,
         Parent = self.Frame
     })
@@ -287,16 +285,6 @@ function Container:_BuildResizeHandle()
     local isResizing = false
     local startPos = nil
     local startSize = nil
-    
-    self.ResizeHandle.MouseEnter:Connect(function()
-        Utilities.Tween(self.ResizeHandle, { TextColor3 = Theme.Colors.Primary }, 0.15)
-    end)
-    
-    self.ResizeHandle.MouseLeave:Connect(function()
-        if not isResizing then
-            Utilities.Tween(self.ResizeHandle, { TextColor3 = Theme.Colors.TextMuted }, 0.15)
-        end
-    end)
     
     self.ResizeHandle.MouseButton1Down:Connect(function()
         isResizing = true
@@ -326,7 +314,6 @@ function Container:_BuildResizeHandle()
         releaseConnection = UserInputService.InputEnded:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 then
                 isResizing = false
-                Utilities.Tween(self.ResizeHandle, { TextColor3 = Theme.Colors.TextMuted }, 0.15)
                 
                 if moveConnection then moveConnection:Disconnect() end
                 if releaseConnection then releaseConnection:Disconnect() end
@@ -716,22 +703,7 @@ function Container:ApplyTheme()
             Utilities.Tween(self.TitleLabel, { TextColor3 = Theme.Colors.TextPrimary }, 0.2)
         end
         
-        -- Window controls
-        local controls = self.Header:FindFirstChild("Controls")
-        if controls then
-            for _, btn in ipairs(controls:GetChildren()) do
-                if btn:IsA("TextButton") then
-                    Utilities.Tween(btn, { 
-                        BackgroundColor3 = Theme.Colors.BackgroundTertiary
-                    }, 0.2)
-                    -- Update icon inside button
-                    local icon = btn:FindFirstChild("Icon")
-                    if icon then
-                        Utilities.Tween(icon, { TextColor3 = Theme.Colors.TextSecondary }, 0.2)
-                    end
-                end
-            end
-        end
+        -- Window controls (circular buttons don't change with theme)
     end
     
     -- Sidebar
