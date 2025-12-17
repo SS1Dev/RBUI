@@ -728,21 +728,21 @@ Theme.Typography = {
 }
 
 -- ═══════════════════════════════════════════════════════════════
--- SPACING (Compact)
+-- SPACING
 -- ═══════════════════════════════════════════════════════════════
 
 Theme.Spacing = {
     None = 0,
-    XS = 2,
-    SM = 4,
-    MD = 8,
-    LG = 12,
-    XL = 16,
+    XS = 4,
+    SM = 6,
+    MD = 10,
+    LG = 14,
+    XL = 18,
     XXL = 24,
 }
 
 -- ═══════════════════════════════════════════════════════════════
--- BORDER RADIUS (Modern - More Rounded)
+-- BORDER RADIUS (Modern)
 -- ═══════════════════════════════════════════════════════════════
 
 Theme.BorderRadius = {
@@ -750,9 +750,9 @@ Theme.BorderRadius = {
     XS = UDim.new(0, 4),
     SM = UDim.new(0, 6),
     MD = UDim.new(0, 8),
-    LG = UDim.new(0, 12),
-    XL = UDim.new(0, 16),
-    XXL = UDim.new(0, 20),
+    LG = UDim.new(0, 10),
+    XL = UDim.new(0, 12),
+    XXL = UDim.new(0, 14), -- Main panel
     Full = UDim.new(0, 9999),
 }
 

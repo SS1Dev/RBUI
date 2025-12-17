@@ -445,7 +445,7 @@ function Container:_BuildSidebar()
         Parent = self.Sidebar
     })
     
-    Utilities.ApplyPadding(self.SidebarContent, Theme.Spacing.MD)
+    Utilities.ApplyPadding(self.SidebarContent, Theme.Spacing.SM)
     Utilities.ApplyListLayout(self.SidebarContent, {
         Padding = Theme.Spacing.XS
     })
@@ -485,10 +485,10 @@ function Container:_BuildContentArea()
     
     -- Padding inside scroll area
     Utilities.Create("UIPadding", {
-        PaddingTop = UDim.new(0, Theme.Spacing.LG),
-        PaddingBottom = UDim.new(0, Theme.Spacing.LG),
+        PaddingTop = UDim.new(0, Theme.Spacing.MD),
+        PaddingBottom = UDim.new(0, Theme.Spacing.XL),
         PaddingLeft = UDim.new(0, Theme.Spacing.LG),
-        PaddingRight = UDim.new(0, Theme.Spacing.LG + 6), -- Extra padding for scrollbar
+        PaddingRight = UDim.new(0, Theme.Spacing.LG),
         Parent = self.Content
     })
     -- Note: No UIListLayout here - tabs are shown one at a time, not stacked
@@ -571,7 +571,7 @@ function Container:AddTab(config)
     
     -- List layout for tab content - items stack vertically
     local listLayout = Utilities.Create("UIListLayout", {
-        Padding = UDim.new(0, Theme.Spacing.MD),
+        Padding = UDim.new(0, Theme.Spacing.SM),
         FillDirection = Enum.FillDirection.Vertical,
         HorizontalAlignment = Enum.HorizontalAlignment.Left,
         VerticalAlignment = Enum.VerticalAlignment.Top,
