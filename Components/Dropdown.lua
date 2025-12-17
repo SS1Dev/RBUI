@@ -67,11 +67,12 @@ function Dropdown.new(config)
 end
 
 function Dropdown:_Build()
-    -- Container - expanded height when open to contain dropdown panel
+    -- Container (ClipsDescendants = false allows panel to show outside)
     self.Frame = Utilities.Create("Frame", {
         Name = "Dropdown",
         Size = self.Size,
         BackgroundTransparency = 1,
+        ClipsDescendants = false,
         ZIndex = 10,
         Parent = self.Parent
     })
@@ -143,17 +144,32 @@ function Dropdown:_Build()
         Parent = self.MainButton
     })
     
-    -- Dropdown panel
+    -- Get ScreenGui for overlay
+    local Players = game:GetService("Players")
+    local playerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
+    
+    -- Create or get dropdown overlay ScreenGui
+    self.OverlayGui = playerGui:FindFirstChild("UIFramework_DropdownOverlay")
+    if not self.OverlayGui then
+        self.OverlayGui = Utilities.Create("ScreenGui", {
+            Name = "UIFramework_DropdownOverlay",
+            ResetOnSpawn = false,
+            ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+            DisplayOrder = 1000, -- Above other UIs
+            Parent = playerGui
+        })
+    end
+    
+    -- Dropdown panel (rendered in overlay for proper display)
     self.Panel = Utilities.Create("Frame", {
-        Name = "Panel",
-        Size = UDim2.new(1, 0, 0, 0),
-        Position = UDim2.new(0, 0, 1, Theme.Spacing.XS),
+        Name = "DropdownPanel",
+        Size = UDim2.new(0, self.Size.X.Offset > 0 and self.Size.X.Offset or 200, 0, 0),
+        Position = UDim2.new(0, 0, 0, 0),
         BackgroundColor3 = Theme.Colors.DropdownBackground,
         BorderSizePixel = 0,
         ClipsDescendants = true,
         Visible = false,
-        ZIndex = 100,
-        Parent = self.Frame
+        Parent = self.OverlayGui
     })
     
     Utilities.ApplyCorner(self.Panel, Theme.BorderRadius.MD)
@@ -248,6 +264,40 @@ function Dropdown:_Build()
     self.MainButton.MouseLeave:Connect(function()
         if not self.Disabled and not self.IsOpen then
             Utilities.Tween(self.Stroke, { Color = Theme.Colors.InputBorder })
+        end
+    end)
+    
+    -- Click outside to close
+    local UserInputService = game:GetService("UserInputService")
+    self._clickConnection = UserInputService.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            if self.IsOpen then
+                -- Check if click is outside dropdown
+                local mousePos = UserInputService:GetMouseLocation()
+                local buttonPos = self.MainButton.AbsolutePosition
+                local buttonSize = self.MainButton.AbsoluteSize
+                local panelPos = self.Panel.AbsolutePosition
+                local panelSize = self.Panel.AbsoluteSize
+                
+                local inButton = mousePos.X >= buttonPos.X and mousePos.X <= buttonPos.X + buttonSize.X
+                    and mousePos.Y >= buttonPos.Y and mousePos.Y <= buttonPos.Y + buttonSize.Y
+                local inPanel = mousePos.X >= panelPos.X and mousePos.X <= panelPos.X + panelSize.X
+                    and mousePos.Y >= panelPos.Y and mousePos.Y <= panelPos.Y + panelSize.Y
+                
+                if not inButton and not inPanel then
+                    self:Close()
+                end
+            end
+        end
+    end)
+    
+    -- Cleanup panel when frame is destroyed
+    self.Frame.Destroying:Connect(function()
+        if self.Panel then
+            self.Panel:Destroy()
+        end
+        if self._clickConnection then
+            self._clickConnection:Disconnect()
         end
     end)
     
@@ -505,11 +555,15 @@ function Dropdown:Open()
         self.MaxHeight
     )
     
-    -- Expand frame to contain panel (for proper clipping)
-    local frameHeight = self.Size.Y.Offset + Theme.Spacing.XS + totalHeight
-    self.Frame.Size = UDim2.new(self.Size.X.Scale, self.Size.X.Offset, 0, frameHeight)
+    -- Position panel below the main button (using absolute position)
+    local buttonPos = self.MainButton.AbsolutePosition
+    local buttonSize = self.MainButton.AbsoluteSize
+    local panelX = buttonPos.X
+    local panelY = buttonPos.Y + buttonSize.Y + Theme.Spacing.XS
+    local panelWidth = buttonSize.X
     
-    Utilities.Tween(self.Panel, { Size = UDim2.new(1, 0, 0, totalHeight) })
+    self.Panel.Position = UDim2.new(0, panelX, 0, panelY)
+    Utilities.Tween(self.Panel, { Size = UDim2.new(0, panelWidth, 0, totalHeight) })
     Utilities.Tween(self.Arrow, { Rotation = 180 })
     Utilities.Tween(self.Stroke, { Color = Theme.Colors.Primary })
     
@@ -535,10 +589,9 @@ function Dropdown:Close()
     
     self.IsOpen = false
     
-    -- Restore original frame size
-    self.Frame.Size = self.Size
-    
-    Utilities.Tween(self.Panel, { Size = UDim2.new(1, 0, 0, 0) })
+    -- Collapse panel
+    local currentWidth = self.Panel.Size.X.Offset
+    Utilities.Tween(self.Panel, { Size = UDim2.new(0, currentWidth, 0, 0) })
     Utilities.Tween(self.Arrow, { Rotation = 0 })
     Utilities.Tween(self.Stroke, { Color = Theme.Colors.InputBorder })
     
