@@ -543,6 +543,9 @@ end
 
 -- Select a tab
 function Container:SelectTab(tabId)
+    -- Use white text on active tab (dark Primary background)
+    local activeTextColor = Color3.fromRGB(255, 255, 255)
+    
     -- Deselect current tab
     if self.CurrentTab and self.Tabs[self.CurrentTab] then
         local currentTab = self.Tabs[self.CurrentTab]
@@ -562,8 +565,8 @@ function Container:SelectTab(tabId)
             BackgroundTransparency = 0,
             BackgroundColor3 = Theme.Colors.Primary
         })
-        Utilities.Tween(newTab.Icon, { TextColor3 = Theme.Colors.TextPrimary })
-        Utilities.Tween(newTab.Text, { TextColor3 = Theme.Colors.TextPrimary })
+        Utilities.Tween(newTab.Icon, { TextColor3 = activeTextColor })
+        Utilities.Tween(newTab.Text, { TextColor3 = activeTextColor })
         Utilities.Tween(newTab.Indicator, { BackgroundTransparency = 0 })
         newTab.Content.Visible = true
         
@@ -587,20 +590,16 @@ function Container:GetTabContent(tabId)
     return nil
 end
 
--- Toggle minimize
+-- Toggle minimize (instant, no animation)
 function Container:ToggleMinimize()
     self.IsMinimized = not self.IsMinimized
     
     if self.IsMinimized then
         self._OriginalSize = self.Frame.Size
-        Utilities.Tween(self.Frame, {
-            Size = UDim2.new(0, self.Size.X.Offset, 0, Theme.Sizes.HeaderHeight)
-        })
+        self.Frame.Size = UDim2.new(0, self.Size.X.Offset, 0, Theme.Sizes.HeaderHeight)
         self.BodyContainer.Visible = false
     else
-        Utilities.Tween(self.Frame, {
-            Size = self._OriginalSize or self.Size
-        })
+        self.Frame.Size = self._OriginalSize or self.Size
         self.BodyContainer.Visible = true
     end
     
@@ -609,32 +608,26 @@ function Container:ToggleMinimize()
     end
 end
 
--- Show container
+-- Show container (instant, no animation)
 function Container:Show()
     self.IsVisible = true
     self.Frame.Visible = true
-    self.Frame.Size = UDim2.new(0, 0, 0, 0)
-    Utilities.SpringTween(self.Frame, { Size = self.Size })
+    self.Frame.Size = self.Size
 end
 
--- Hide container
+-- Hide container (instant, no animation)
 function Container:Hide()
     self.IsVisible = false
-    Utilities.Tween(self.Frame, { Size = UDim2.new(0, 0, 0, 0) }, 0.15)
-    task.delay(0.15, function()
-        self.Frame.Visible = false
-    end)
+    self.Frame.Visible = false
 end
 
--- Close container
+-- Close container (instant, no animation)
 function Container:Close()
     if self.OnClose then
         self.OnClose()
     end
     self:Hide()
-    task.delay(0.2, function()
-        self:Destroy()
-    end)
+    self:Destroy()
 end
 
 -- Destroy container
@@ -746,7 +739,8 @@ function Container:ApplyTheme()
         end
     end
     
-    -- Update tabs
+    -- Update tabs (use white text on active tab for visibility)
+    local activeTextColor = Color3.fromRGB(255, 255, 255)
     for tabId, tabData in pairs(self.Tabs) do
         if tabData.Button then
             local isActive = tabId == self.CurrentTab
@@ -759,14 +753,14 @@ function Container:ApplyTheme()
             local icon = tabData.Button:FindFirstChild("Icon")
             if icon then
                 Utilities.Tween(icon, {
-                    TextColor3 = isActive and Theme.Colors.TextPrimary or Theme.Colors.TextSecondary
+                    TextColor3 = isActive and activeTextColor or Theme.Colors.TextSecondary
                 }, 0.2)
             end
             
             local text = tabData.Button:FindFirstChild("Text")
             if text then
                 Utilities.Tween(text, {
-                    TextColor3 = isActive and Theme.Colors.TextPrimary or Theme.Colors.TextSecondary
+                    TextColor3 = isActive and activeTextColor or Theme.Colors.TextSecondary
                 }, 0.2)
             end
             

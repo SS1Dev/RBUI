@@ -238,39 +238,83 @@ function Utilities.Destroy(instance)
     end
 end
 
--- Make draggable
+-- Make draggable (Smooth version using UserInputService)
 function Utilities.MakeDraggable(frame, handle)
+    local UserInputService = game:GetService("UserInputService")
+    local RunService = game:GetService("RunService")
+    
     handle = handle or frame
     
     local dragging = false
-    local dragStart
-    local startPos
+    local dragStart = Vector2.new(0, 0)
+    local startPos = UDim2.new(0, 0, 0, 0)
+    local targetPos = UDim2.new(0, 0, 0, 0)
+    local currentPos = UDim2.new(0, 0, 0, 0)
+    local smoothness = 0.15 -- Lower = smoother, higher = more responsive
+    local renderConnection = nil
     
+    -- Smooth interpolation for position
+    local function lerpUDim2(a, b, t)
+        return UDim2.new(
+            a.X.Scale + (b.X.Scale - a.X.Scale) * t,
+            a.X.Offset + (b.X.Offset - a.X.Offset) * t,
+            a.Y.Scale + (b.Y.Scale - a.Y.Scale) * t,
+            a.Y.Offset + (b.Y.Offset - a.Y.Offset) * t
+        )
+    end
+    
+    -- Start dragging
     handle.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or
            input.UserInputType == Enum.UserInputType.Touch then
             dragging = true
             dragStart = input.Position
             startPos = frame.Position
+            currentPos = frame.Position
+            targetPos = frame.Position
             
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
+            -- Start render loop for smooth movement
+            if not renderConnection then
+                renderConnection = RunService.RenderStepped:Connect(function(deltaTime)
+                    if dragging then
+                        -- Smooth interpolation
+                        currentPos = lerpUDim2(currentPos, targetPos, math.min(1, smoothness / deltaTime * 0.016))
+                        frame.Position = currentPos
+                    end
+                end)
+            end
         end
     end)
     
-    handle.InputChanged:Connect(function(input)
+    -- Track mouse movement globally
+    UserInputService.InputChanged:Connect(function(input)
         if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or
                         input.UserInputType == Enum.UserInputType.Touch) then
             local delta = input.Position - dragStart
-            frame.Position = UDim2.new(
+            targetPos = UDim2.new(
                 startPos.X.Scale,
                 startPos.X.Offset + delta.X,
                 startPos.Y.Scale,
                 startPos.Y.Offset + delta.Y
             )
+        end
+    end)
+    
+    -- Stop dragging
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or
+           input.UserInputType == Enum.UserInputType.Touch then
+            if dragging then
+                dragging = false
+                -- Snap to final position
+                frame.Position = targetPos
+                
+                -- Clean up render connection
+                if renderConnection then
+                    renderConnection:Disconnect()
+                    renderConnection = nil
+                end
+            end
         end
     end)
 end

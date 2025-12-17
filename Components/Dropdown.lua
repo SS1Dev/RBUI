@@ -531,15 +531,12 @@ function Dropdown:Open()
     )
     
     -- Position panel below the main button (using absolute position)
-    -- AbsolutePosition gives screen coords (0,0 = top-left of screen)
-    -- ScreenGui with IgnoreGuiInset = false starts at (0, guiInset.Y) in screen coords
-    -- So we need to subtract the inset from Y to position correctly in the ScreenGui
-    local GuiService = game:GetService("GuiService")
-    local guiInset = GuiService:GetGuiInset()
+    -- AbsolutePosition and ScreenGui with IgnoreGuiInset = false use the same coordinate system
+    -- So we don't need to subtract the inset
     local buttonPos = self.MainButton.AbsolutePosition
     local buttonSize = self.MainButton.AbsoluteSize
     local panelX = buttonPos.X
-    local panelY = buttonPos.Y + buttonSize.Y + Theme.Spacing.XS - guiInset.Y
+    local panelY = buttonPos.Y + buttonSize.Y + Theme.Spacing.XS
     local panelWidth = buttonSize.X
     
     self.Panel.Position = UDim2.new(0, panelX, 0, panelY)

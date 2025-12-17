@@ -290,6 +290,9 @@ end
 
 -- Select tab
 function Tab:SelectTab(tabId)
+    -- Use white text on active tab for visibility on dark TabActive background
+    local activeTextColor = Color3.fromRGB(255, 255, 255)
+    
     -- Deselect current tab
     if self.ActiveTab and self.TabButtons[self.ActiveTab] then
         local currentTab = self.TabButtons[self.ActiveTab]
@@ -318,9 +321,9 @@ function Tab:SelectTab(tabId)
             BackgroundColor3 = Theme.Colors.TabActive
         })
         if newTab.Icon then
-            Utilities.Tween(newTab.Icon, { TextColor3 = Theme.Colors.TextPrimary })
+            Utilities.Tween(newTab.Icon, { TextColor3 = activeTextColor })
         end
-        Utilities.Tween(newTab.Text, { TextColor3 = Theme.Colors.TextPrimary })
+        Utilities.Tween(newTab.Text, { TextColor3 = activeTextColor })
         Utilities.Tween(newTab.Indicator, { BackgroundTransparency = 0 })
         
         if self.TabContents[tabId] then
@@ -385,6 +388,9 @@ end
 
 -- Apply theme
 function Tab:ApplyTheme()
+    -- Use white text on active tab for visibility
+    local activeTextColor = Color3.fromRGB(255, 255, 255)
+    
     -- Update tab bar background
     if self.TabBar then
         Utilities.Tween(self.TabBar, { BackgroundColor3 = Theme.Colors.BackgroundSecondary }, 0.2)
@@ -406,12 +412,12 @@ function Tab:ApplyTheme()
         
         if tabData.Icon then
             Utilities.Tween(tabData.Icon, {
-                TextColor3 = isActive and Theme.Colors.TextPrimary or Theme.Colors.TextSecondary
+                TextColor3 = isActive and activeTextColor or Theme.Colors.TextSecondary
             }, 0.2)
         end
         
         Utilities.Tween(tabData.Text, {
-            TextColor3 = isActive and Theme.Colors.TextPrimary or Theme.Colors.TextSecondary
+            TextColor3 = isActive and activeTextColor or Theme.Colors.TextSecondary
         }, 0.2)
         
         Utilities.Tween(tabData.Indicator, {

@@ -52,31 +52,35 @@ end
 
 -- Get colors based on variant
 function Button:_GetVariantColors()
+    -- Use white text on dark buttons for visibility
+    local whiteText = Color3.fromRGB(255, 255, 255)
+    local darkText = Color3.fromRGB(30, 30, 30)
+    
     local variants = {
         primary = {
             Background = Theme.Colors.Primary,
             BackgroundHover = Theme.Colors.PrimaryHover,
-            Text = Theme.Colors.TextPrimary
+            Text = whiteText -- Always white on primary buttons
         },
         secondary = {
             Background = Theme.Colors.Secondary,
             BackgroundHover = Theme.Colors.SecondaryHover,
-            Text = Theme.Colors.TextPrimary
+            Text = whiteText -- Always white on secondary buttons
         },
         success = {
             Background = Theme.Colors.Success,
             BackgroundHover = Theme.Colors.SuccessHover,
-            Text = Theme.Colors.TextPrimary
+            Text = darkText -- Dark text on bright green
         },
         warning = {
             Background = Theme.Colors.Warning,
             BackgroundHover = Theme.Colors.WarningHover,
-            Text = Theme.Colors.Background
+            Text = darkText -- Dark text on yellow
         },
         error = {
             Background = Theme.Colors.Error,
             BackgroundHover = Theme.Colors.ErrorHover,
-            Text = Theme.Colors.TextPrimary
+            Text = whiteText -- White on red
         },
         ghost = {
             Background = Color3.fromRGB(0, 0, 0),
