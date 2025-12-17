@@ -241,7 +241,7 @@ end
 function Button:SetIcon(iconName)
     self.Icon = iconName
     if self.IconLabel then
-        self.IconLabel.Image = Icons.Get(iconName)
+        self.IconLabel.Text = Icons.Get(iconName)
     end
 end
 

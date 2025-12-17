@@ -330,13 +330,16 @@ function UIFramework.Notify(config)
     })
     
     -- Icon
-    UIFramework.Utilities.Create("ImageLabel", {
+    UIFramework.Utilities.Create("TextLabel", {
         Name = "Icon",
         Size = UDim2.new(0, 20, 0, 20),
         BackgroundTransparency = 1,
-        Image = UIFramework.Icons.Get(icon),
-        ImageColor3 = color,
-        ScaleType = Enum.ScaleType.Fit,
+        Text = UIFramework.Icons.Get(icon),
+        TextColor3 = color,
+        TextSize = 18,
+        Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Center,
+        TextYAlignment = Enum.TextYAlignment.Center,
         LayoutOrder = 1,
         Parent = content
     })

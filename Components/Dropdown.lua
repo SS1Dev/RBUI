@@ -344,7 +344,7 @@ function Dropdown:_BuildOptions()
                 Thickness = 1
             })
             
-            Utilities.Create("ImageLabel", {
+            Utilities.Create("TextLabel", {
                 Name = "Check",
                 Size = UDim2.new(0, 12, 0, 12),
                 Position = UDim2.new(0.5, 0, 0.5, 0),
