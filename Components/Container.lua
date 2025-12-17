@@ -118,6 +118,9 @@ function Container:_Build()
         Parent = self.Frame
     })
     
+    -- Apply corner radius for bottom corners
+    Utilities.ApplyCorner(self.BodyContainer, Theme.BorderRadius.LG)
+    
     -- Sidebar
     if self.ShowSidebar then
         self:_BuildSidebar()
@@ -140,8 +143,12 @@ function Container:_BuildHeader()
         BackgroundColor3 = Theme.Colors.BackgroundSecondary,
         BackgroundTransparency = self.HeaderTransparency,
         BorderSizePixel = 0,
+        ClipsDescendants = true,
         Parent = self.Frame
     })
+    
+    -- Apply corner radius to match main frame (for top corners)
+    Utilities.ApplyCorner(self.Header, Theme.BorderRadius.LG)
     
     -- Header bottom border (subtle)
     Utilities.Create("Frame", {
@@ -340,6 +347,9 @@ function Container:_BuildSidebar()
         Parent = self.BodyContainer
     })
     
+    -- Apply corner radius for bottom-left corner
+    Utilities.ApplyCorner(self.Sidebar, Theme.BorderRadius.LG)
+    
     -- Sidebar right border (subtle)
     Utilities.Create("Frame", {
         Name = "Border",
@@ -386,6 +396,9 @@ function Container:_BuildContentArea()
         ClipsDescendants = true, -- Prevent content overflow
         Parent = self.BodyContainer
     })
+    
+    -- Apply corner radius for bottom-right corner (when no sidebar, also bottom-left)
+    Utilities.ApplyCorner(self.ContentArea, Theme.BorderRadius.LG)
     
     -- Content scroll frame (auto scrollbar)
     self.Content = Utilities.Create("ScrollingFrame", {
