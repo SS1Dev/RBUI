@@ -474,15 +474,23 @@ function Container:_BuildContentArea()
         ScrollBarImageColor3 = Theme.Colors.Primary,
         ScrollBarImageTransparency = 0.3,
         VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar,
+        HorizontalScrollBarInset = Enum.ScrollBarInset.None,
         CanvasSize = UDim2.new(0, 0, 0, 0),
         AutomaticCanvasSize = Enum.AutomaticSize.Y,
         ScrollingDirection = Enum.ScrollingDirection.Y,
-        ElasticBehavior = Enum.ElasticBehavior.Always,
+        ElasticBehavior = Enum.ElasticBehavior.WhenScrollable,
         ClipsDescendants = true, -- Prevent content overflow
         Parent = self.ContentArea
     })
     
-    Utilities.ApplyPadding(self.Content, Theme.Spacing.LG)
+    -- Padding inside scroll area
+    Utilities.Create("UIPadding", {
+        PaddingTop = UDim.new(0, Theme.Spacing.LG),
+        PaddingBottom = UDim.new(0, Theme.Spacing.LG),
+        PaddingLeft = UDim.new(0, Theme.Spacing.LG),
+        PaddingRight = UDim.new(0, Theme.Spacing.LG + 6), -- Extra padding for scrollbar
+        Parent = self.Content
+    })
     -- Note: No UIListLayout here - tabs are shown one at a time, not stacked
 end
 

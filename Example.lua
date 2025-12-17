@@ -3,6 +3,14 @@
     
     This script demonstrates all components of the UIFramework.
     
+    Features:
+    - Container with sidebar navigation
+    - Multiple themes (Dark, Light, Pink, Blue, Golden, etc.)
+    - Resizable panel with min/max constraints
+    - Transparency settings
+    - Auto scrollbar when content overflows
+    - All components: Label, Input, Button, Toggle, Slider, Checkbox, Dropdown, Tab
+    
     Usage with Executor:
     1. Host UIFramework.lua on a raw URL (GitHub, Pastebin, etc.)
     2. Replace YOUR_URL_HERE with the actual URL
@@ -165,7 +173,7 @@ local settingsTab = Panel:AddTab({
 })
 
 UIFramework.CreateSection({
-    Text = "🎨 Theme Settings",
+    Text = "Theme Settings",
     Icon = "palette",
     Parent = settingsTab
 })
@@ -587,10 +595,41 @@ local checkboxes = {
     { text = "Enable Particles", icon = "star", value = false },
     { text = "Show Damage Numbers", icon = "bolt", value = true },
     { text = "Enable Controller Support", icon = "gamepad", value = false },
-    { text = "Show FPS Counter", icon = "chart-line", value = false }
+    { text = "Show FPS Counter", icon = "chart-line", value = false },
+    { text = "Show Health Bar", icon = "heart", value = true },
+    { text = "Enable Auto-Run", icon = "forward", value = false },
+    { text = "Show Quest Tracker", icon = "list-check", value = true },
 }
 
 for _, cb in ipairs(checkboxes) do
+    UIFramework.Checkbox.new({
+        Text = cb.text,
+        Icon = cb.icon,
+        Value = cb.value,
+        Parent = checkboxTab,
+        OnChange = function(value)
+            print(cb.text .. ":", value)
+        end
+    })
+end
+
+UIFramework.CreateDivider({ Parent = checkboxTab })
+
+UIFramework.CreateSection({
+    Text = "Graphics Settings",
+    Icon = "video",
+    Parent = checkboxTab
+})
+
+local graphicsCheckboxes = {
+    { text = "Enable Shadows", icon = "sun", value = true },
+    { text = "Motion Blur", icon = "forward", value = false },
+    { text = "Anti-Aliasing", icon = "expand", value = true },
+    { text = "V-Sync", icon = "sync", value = false },
+    { text = "High Quality Textures", icon = "image", value = true },
+}
+
+for _, cb in ipairs(graphicsCheckboxes) do
     UIFramework.Checkbox.new({
         Text = cb.text,
         Icon = cb.icon,
@@ -801,11 +840,12 @@ local tips = {
     "📐 Drag the bottom-right corner to resize the panel",
     "🔍 Use searchable dropdowns for large option lists",
     "⌨️ Press Enter to submit input fields",
-    "📜 Content auto-scrolls when it exceeds the viewport",
+    "📜 Scroll bar appears automatically when content overflows",
     "🎯 Minimize the panel by clicking the minimize button",
     "💾 All settings can have callbacks for real-time updates",
     "🔔 Use notifications to provide user feedback",
-    "👁 Adjust panel transparency in Settings tab"
+    "👁 Adjust panel transparency in Settings tab",
+    "✂️ Content is clipped to stay within panel boundaries",
 }
 
 for _, tip in ipairs(tips) do
