@@ -23,28 +23,28 @@ Theme.Presets = {
             PrimaryGlow = Color3.fromRGB(138, 43, 226),
             
             -- Secondary
-            Secondary = Color3.fromRGB(75, 85, 99),
-            SecondaryHover = Color3.fromRGB(107, 114, 128),
+            Secondary = Color3.fromRGB(75, 72, 73),
+            SecondaryHover = Color3.fromRGB(107, 104, 105),
             
             -- Accent (Neon Cyan)
             Accent = Color3.fromRGB(0, 255, 255),
             AccentHover = Color3.fromRGB(80, 255, 255),
             
-            -- Background
-            Background = Color3.fromRGB(17, 17, 23),
-            BackgroundSecondary = Color3.fromRGB(25, 25, 35),
-            BackgroundTertiary = Color3.fromRGB(35, 35, 50),
+            -- Background (#262324 base)
+            Background = Color3.fromRGB(38, 35, 36),
+            BackgroundSecondary = Color3.fromRGB(48, 45, 46),
+            BackgroundTertiary = Color3.fromRGB(58, 55, 56),
             
             -- Surface
-            Surface = Color3.fromRGB(28, 28, 40),
-            SurfaceHover = Color3.fromRGB(40, 40, 55),
-            SurfaceBorder = Color3.fromRGB(60, 60, 80),
+            Surface = Color3.fromRGB(52, 49, 50),
+            SurfaceHover = Color3.fromRGB(62, 59, 60),
+            SurfaceBorder = Color3.fromRGB(78, 75, 76),
             
             -- Text
             TextPrimary = Color3.fromRGB(255, 255, 255),
-            TextSecondary = Color3.fromRGB(180, 180, 200),
-            TextMuted = Color3.fromRGB(120, 120, 140),
-            TextDisabled = Color3.fromRGB(80, 80, 100),
+            TextSecondary = Color3.fromRGB(200, 197, 198),
+            TextMuted = Color3.fromRGB(140, 137, 138),
+            TextDisabled = Color3.fromRGB(100, 97, 98),
             
             -- Status
             Success = Color3.fromRGB(0, 255, 136),
@@ -57,25 +57,25 @@ Theme.Presets = {
             InfoHover = Color3.fromRGB(80, 220, 255),
             
             -- Components
-            InputBackground = Color3.fromRGB(25, 25, 35),
-            InputBorder = Color3.fromRGB(60, 60, 80),
+            InputBackground = Color3.fromRGB(48, 45, 46),
+            InputBorder = Color3.fromRGB(78, 75, 76),
             InputFocus = Color3.fromRGB(138, 43, 226),
             
-            ToggleOff = Color3.fromRGB(60, 60, 80),
+            ToggleOff = Color3.fromRGB(78, 75, 76),
             ToggleOn = Color3.fromRGB(138, 43, 226),
             ToggleKnob = Color3.fromRGB(255, 255, 255),
             
-            SliderTrack = Color3.fromRGB(45, 45, 60),
+            SliderTrack = Color3.fromRGB(58, 55, 56),
             SliderFill = Color3.fromRGB(138, 43, 226),
             SliderKnob = Color3.fromRGB(255, 255, 255),
             
-            DropdownBackground = Color3.fromRGB(25, 25, 35),
-            DropdownItemHover = Color3.fromRGB(45, 45, 65),
+            DropdownBackground = Color3.fromRGB(48, 45, 46),
+            DropdownItemHover = Color3.fromRGB(68, 65, 66),
             
             TabActive = Color3.fromRGB(138, 43, 226),
-            TabInactive = Color3.fromRGB(45, 45, 60),
+            TabInactive = Color3.fromRGB(58, 55, 56),
             
-            Shadow = Color3.fromRGB(0, 0, 0),
+            Shadow = Color3.fromRGB(20, 17, 18),
             Glow = Color3.fromRGB(138, 43, 226),
         }
     },

@@ -564,7 +564,6 @@ function Container:AddTab(config)
         Size = UDim2.new(1, 0, 0, 0), -- Width 100%, Height auto
         AutomaticSize = Enum.AutomaticSize.Y, -- Auto height based on content
         BackgroundTransparency = 1,
-        ClipsDescendants = false, -- Allow dropdowns to show
         Visible = false,
         Parent = self.Content
     })

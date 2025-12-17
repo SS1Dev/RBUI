@@ -67,12 +67,11 @@ function Dropdown.new(config)
 end
 
 function Dropdown:_Build()
-    -- Container
+    -- Container - expanded height when open to contain dropdown panel
     self.Frame = Utilities.Create("Frame", {
         Name = "Dropdown",
         Size = self.Size,
         BackgroundTransparency = 1,
-        ClipsDescendants = false,
         ZIndex = 10,
         Parent = self.Parent
     })
@@ -506,6 +505,10 @@ function Dropdown:Open()
         self.MaxHeight
     )
     
+    -- Expand frame to contain panel (for proper clipping)
+    local frameHeight = self.Size.Y.Offset + Theme.Spacing.XS + totalHeight
+    self.Frame.Size = UDim2.new(self.Size.X.Scale, self.Size.X.Offset, 0, frameHeight)
+    
     Utilities.Tween(self.Panel, { Size = UDim2.new(1, 0, 0, totalHeight) })
     Utilities.Tween(self.Arrow, { Rotation = 180 })
     Utilities.Tween(self.Stroke, { Color = Theme.Colors.Primary })
@@ -531,6 +534,9 @@ function Dropdown:Close()
     if not self.IsOpen then return end
     
     self.IsOpen = false
+    
+    -- Restore original frame size
+    self.Frame.Size = self.Size
     
     Utilities.Tween(self.Panel, { Size = UDim2.new(1, 0, 0, 0) })
     Utilities.Tween(self.Arrow, { Rotation = 0 })
