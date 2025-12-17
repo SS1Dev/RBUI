@@ -187,12 +187,15 @@ for _, themeName in ipairs(UIFramework.GetAvailableThemes()) do
         Pink = "heart",
         Blue = "water",
         Golden = "crown",
+        Rose = "heart",
         DarkBlue = "moon",
         DarkPink = "moon",
         DarkGolden = "moon",
+        DarkRose = "moon",
         LightPink = "sun",
         LightGolden = "sun",
-        LightBlue = "sun"
+        LightBlue = "sun",
+        LightRose = "sun"
     }
     table.insert(themeOptions, {
         Text = themeName,
@@ -761,10 +764,11 @@ local features = {
     { icon = "square-check", text = "Checkbox - Checkbox on right side" },
     { icon = "list", text = "Dropdown - Single and multiple selection" },
     { icon = "folder", text = "Tab - Navigation component" },
+    { icon = "minus", text = "Divider - Separator that changes with theme" },
     { icon = "expand", text = "Resizable - Drag corner to resize panel" },
     { icon = "move", text = "Draggable - Move panel from anywhere" },
     { icon = "eye", text = "Transparency - Configurable panel transparency" },
-    { icon = "palette", text = "Themes - 11 built-in color themes" },
+    { icon = "palette", text = "Themes - 14 built-in color themes" },
     { icon = "circle", text = "macOS Style - Circular minimize/close buttons" }
 }
 
@@ -869,6 +873,7 @@ local tips = {
     "💾 All settings can have callbacks for real-time updates",
     "🔔 Use notifications to provide user feedback",
     "👁 Adjust panel transparency in Settings tab",
+    "➖ Dividers automatically change color with theme",
 }
 
 for _, tip in ipairs(tips) do

@@ -699,6 +699,192 @@ Theme.Presets = {
             Glow = Color3.fromRGB(37, 99, 235),
         }
     },
+    
+    -- ═══════════════════════════════════════
+    -- ROSE THEME (Dark Rose - Elegant)
+    -- ═══════════════════════════════════════
+    Rose = {
+        Name = "Rose",
+        Colors = {
+            Primary = Color3.fromRGB(225, 59, 148),
+            PrimaryHover = Color3.fromRGB(240, 100, 170),
+            PrimaryActive = Color3.fromRGB(190, 40, 120),
+            PrimaryGlow = Color3.fromRGB(225, 59, 148),
+            
+            Secondary = Color3.fromRGB(130, 80, 105),
+            SecondaryHover = Color3.fromRGB(150, 100, 125),
+            
+            Accent = Color3.fromRGB(255, 130, 180),
+            AccentHover = Color3.fromRGB(255, 160, 200),
+            
+            Background = Color3.fromRGB(28, 18, 24),
+            BackgroundSecondary = Color3.fromRGB(38, 26, 33),
+            BackgroundTertiary = Color3.fromRGB(52, 36, 45),
+            
+            Surface = Color3.fromRGB(45, 30, 38),
+            SurfaceHover = Color3.fromRGB(58, 42, 52),
+            SurfaceBorder = Color3.fromRGB(95, 60, 78),
+            
+            TextPrimary = Color3.fromRGB(255, 245, 250),
+            TextSecondary = Color3.fromRGB(220, 190, 205),
+            TextMuted = Color3.fromRGB(160, 130, 145),
+            TextDisabled = Color3.fromRGB(100, 75, 88),
+            
+            Success = Color3.fromRGB(80, 230, 150),
+            SuccessHover = Color3.fromRGB(110, 245, 175),
+            Warning = Color3.fromRGB(255, 195, 80),
+            WarningHover = Color3.fromRGB(255, 215, 120),
+            Error = Color3.fromRGB(255, 90, 110),
+            ErrorHover = Color3.fromRGB(255, 130, 145),
+            Info = Color3.fromRGB(200, 140, 220),
+            InfoHover = Color3.fromRGB(220, 170, 240),
+            
+            InputBackground = Color3.fromRGB(38, 26, 33),
+            InputBorder = Color3.fromRGB(95, 60, 78),
+            InputFocus = Color3.fromRGB(225, 59, 148),
+            
+            ToggleOff = Color3.fromRGB(75, 50, 62),
+            ToggleOn = Color3.fromRGB(225, 59, 148),
+            ToggleKnob = Color3.fromRGB(255, 255, 255),
+            
+            SliderTrack = Color3.fromRGB(62, 42, 52),
+            SliderFill = Color3.fromRGB(225, 59, 148),
+            SliderKnob = Color3.fromRGB(255, 255, 255),
+            
+            DropdownBackground = Color3.fromRGB(38, 26, 33),
+            DropdownItemHover = Color3.fromRGB(62, 42, 52),
+            
+            TabActive = Color3.fromRGB(225, 59, 148),
+            TabInactive = Color3.fromRGB(62, 42, 52),
+            
+            Shadow = Color3.fromRGB(0, 0, 0),
+            Glow = Color3.fromRGB(225, 59, 148),
+        }
+    },
+    
+    -- ═══════════════════════════════════════
+    -- DARK ROSE THEME
+    -- ═══════════════════════════════════════
+    DarkRose = {
+        Name = "DarkRose",
+        Colors = {
+            Primary = Color3.fromRGB(190, 50, 120),
+            PrimaryHover = Color3.fromRGB(210, 80, 145),
+            PrimaryActive = Color3.fromRGB(160, 35, 95),
+            PrimaryGlow = Color3.fromRGB(190, 50, 120),
+            
+            Secondary = Color3.fromRGB(110, 65, 88),
+            SecondaryHover = Color3.fromRGB(135, 85, 110),
+            
+            Accent = Color3.fromRGB(230, 110, 160),
+            AccentHover = Color3.fromRGB(240, 145, 185),
+            
+            Background = Color3.fromRGB(22, 14, 18),
+            BackgroundSecondary = Color3.fromRGB(32, 20, 26),
+            BackgroundTertiary = Color3.fromRGB(45, 30, 38),
+            
+            Surface = Color3.fromRGB(38, 24, 32),
+            SurfaceHover = Color3.fromRGB(52, 35, 44),
+            SurfaceBorder = Color3.fromRGB(80, 52, 66),
+            
+            TextPrimary = Color3.fromRGB(252, 240, 246),
+            TextSecondary = Color3.fromRGB(210, 180, 195),
+            TextMuted = Color3.fromRGB(150, 120, 135),
+            TextDisabled = Color3.fromRGB(95, 70, 82),
+            
+            Success = Color3.fromRGB(74, 222, 128),
+            SuccessHover = Color3.fromRGB(110, 235, 158),
+            Warning = Color3.fromRGB(251, 191, 36),
+            WarningHover = Color3.fromRGB(252, 211, 77),
+            Error = Color3.fromRGB(248, 113, 113),
+            ErrorHover = Color3.fromRGB(252, 165, 165),
+            Info = Color3.fromRGB(190, 130, 170),
+            InfoHover = Color3.fromRGB(210, 160, 190),
+            
+            InputBackground = Color3.fromRGB(32, 20, 26),
+            InputBorder = Color3.fromRGB(80, 52, 66),
+            InputFocus = Color3.fromRGB(190, 50, 120),
+            
+            ToggleOff = Color3.fromRGB(62, 40, 52),
+            ToggleOn = Color3.fromRGB(190, 50, 120),
+            ToggleKnob = Color3.fromRGB(255, 255, 255),
+            
+            SliderTrack = Color3.fromRGB(52, 34, 44),
+            SliderFill = Color3.fromRGB(190, 50, 120),
+            SliderKnob = Color3.fromRGB(255, 255, 255),
+            
+            DropdownBackground = Color3.fromRGB(32, 20, 26),
+            DropdownItemHover = Color3.fromRGB(52, 34, 44),
+            
+            TabActive = Color3.fromRGB(190, 50, 120),
+            TabInactive = Color3.fromRGB(52, 34, 44),
+            
+            Shadow = Color3.fromRGB(0, 0, 0),
+            Glow = Color3.fromRGB(190, 50, 120),
+        }
+    },
+    
+    -- ═══════════════════════════════════════
+    -- LIGHT ROSE THEME
+    -- ═══════════════════════════════════════
+    LightRose = {
+        Name = "LightRose",
+        Colors = {
+            Primary = Color3.fromRGB(225, 59, 148),
+            PrimaryHover = Color3.fromRGB(240, 100, 170),
+            PrimaryActive = Color3.fromRGB(190, 40, 120),
+            PrimaryGlow = Color3.fromRGB(225, 59, 148),
+            
+            Secondary = Color3.fromRGB(195, 165, 180),
+            SecondaryHover = Color3.fromRGB(175, 140, 160),
+            
+            Accent = Color3.fromRGB(240, 100, 170),
+            AccentHover = Color3.fromRGB(250, 150, 200),
+            
+            Background = Color3.fromRGB(255, 248, 252),
+            BackgroundSecondary = Color3.fromRGB(255, 238, 246),
+            BackgroundTertiary = Color3.fromRGB(255, 220, 238),
+            
+            Surface = Color3.fromRGB(255, 255, 255),
+            SurfaceHover = Color3.fromRGB(255, 238, 246),
+            SurfaceBorder = Color3.fromRGB(245, 200, 225),
+            
+            TextPrimary = Color3.fromRGB(75, 25, 50),
+            TextSecondary = Color3.fromRGB(115, 65, 90),
+            TextMuted = Color3.fromRGB(175, 125, 150),
+            TextDisabled = Color3.fromRGB(215, 175, 195),
+            
+            Success = Color3.fromRGB(34, 197, 94),
+            SuccessHover = Color3.fromRGB(74, 222, 128),
+            Warning = Color3.fromRGB(234, 179, 8),
+            WarningHover = Color3.fromRGB(250, 204, 21),
+            Error = Color3.fromRGB(239, 68, 68),
+            ErrorHover = Color3.fromRGB(248, 113, 113),
+            Info = Color3.fromRGB(225, 59, 148),
+            InfoHover = Color3.fromRGB(240, 100, 170),
+            
+            InputBackground = Color3.fromRGB(255, 255, 255),
+            InputBorder = Color3.fromRGB(245, 200, 225),
+            InputFocus = Color3.fromRGB(225, 59, 148),
+            
+            ToggleOff = Color3.fromRGB(225, 195, 210),
+            ToggleOn = Color3.fromRGB(225, 59, 148),
+            ToggleKnob = Color3.fromRGB(255, 255, 255),
+            
+            SliderTrack = Color3.fromRGB(255, 220, 238),
+            SliderFill = Color3.fromRGB(225, 59, 148),
+            SliderKnob = Color3.fromRGB(255, 255, 255),
+            
+            DropdownBackground = Color3.fromRGB(255, 255, 255),
+            DropdownItemHover = Color3.fromRGB(255, 238, 246),
+            
+            TabActive = Color3.fromRGB(225, 59, 148),
+            TabInactive = Color3.fromRGB(255, 220, 238),
+            
+            Shadow = Color3.fromRGB(100, 50, 75),
+            Glow = Color3.fromRGB(225, 59, 148),
+        }
+    },
 }
 
 -- ═══════════════════════════════════════════════════════════════
