@@ -157,7 +157,7 @@ function UIFramework.CreateSection(config)
     return section
 end
 
--- Create a divider
+-- Create a divider (responds to theme changes)
 function UIFramework.CreateDivider(config)
     config = config or {}
     
@@ -168,6 +168,13 @@ function UIFramework.CreateDivider(config)
         BorderSizePixel = 0,
         Parent = config.Parent
     })
+    
+    -- Register for theme updates (only if no custom color specified)
+    if not config.Color then
+        UIFramework.Theme.RegisterComponent(divider, {
+            BackgroundColor3 = "SurfaceBorder"
+        })
+    end
     
     return divider
 end

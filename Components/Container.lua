@@ -5,6 +5,7 @@
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
+local Lighting = game:GetService("Lighting")
 
 local Container = {}
 Container.__index = Container
@@ -59,6 +60,10 @@ function Container.new(config)
     self.SidebarTransparency = config.SidebarTransparency or 0
     self.ContentTransparency = config.ContentTransparency or 0
     
+    -- Blur effect settings
+    self.BlurEnabled = config.BlurEnabled or false
+    self.BlurSize = config.BlurSize or 10
+    
     -- Callbacks
     self.OnClose = config.OnClose
     self.OnMinimize = config.OnMinimize
@@ -68,9 +73,15 @@ function Container.new(config)
     self.CurrentTab = nil
     self.IsMinimized = false
     self.IsVisible = true
+    self.BlurEffect = nil
     
     self:_Build()
     self:_RegisterThemeListener()
+    
+    -- Apply blur if enabled
+    if self.BlurEnabled then
+        self:_CreateBlurEffect()
+    end
     
     return self
 end
@@ -613,12 +624,20 @@ function Container:Show()
     self.IsVisible = true
     self.Frame.Visible = true
     self.Frame.Size = self.Size
+    
+    -- Show blur if enabled
+    if self.BlurEnabled then
+        self:_CreateBlurEffect()
+    end
 end
 
 -- Hide container (instant, no animation)
 function Container:Hide()
     self.IsVisible = false
     self.Frame.Visible = false
+    
+    -- Hide blur
+    self:_RemoveBlurEffect()
 end
 
 -- Close container (instant, no animation)
@@ -632,6 +651,12 @@ end
 
 -- Destroy container
 function Container:Destroy()
+    -- Remove blur effect
+    if self.BlurEffect then
+        self.BlurEffect:Destroy()
+        self.BlurEffect = nil
+    end
+    
     if self.ScreenGui then
         self.ScreenGui:Destroy()
     end
@@ -774,6 +799,54 @@ function Container:_RegisterThemeListener()
     self._themeListenerId = Theme.OnThemeChange(function()
         self:ApplyTheme()
     end)
+end
+
+-- Create blur effect
+function Container:_CreateBlurEffect()
+    if self.BlurEffect then return end
+    
+    self.BlurEffect = Instance.new("BlurEffect")
+    self.BlurEffect.Name = "UIFramework_PanelBlur"
+    self.BlurEffect.Size = 0
+    self.BlurEffect.Parent = Lighting
+    
+    -- Animate blur in
+    Utilities.Tween(self.BlurEffect, { Size = self.BlurSize }, 0.3)
+end
+
+-- Remove blur effect
+function Container:_RemoveBlurEffect()
+    if not self.BlurEffect then return end
+    
+    -- Animate blur out
+    Utilities.Tween(self.BlurEffect, { Size = 0 }, 0.2)
+    
+    task.delay(0.2, function()
+        if self.BlurEffect then
+            self.BlurEffect:Destroy()
+            self.BlurEffect = nil
+        end
+    end)
+end
+
+-- Set blur enabled
+function Container:SetBlurEnabled(enabled)
+    self.BlurEnabled = enabled
+    
+    if enabled and self.IsVisible then
+        self:_CreateBlurEffect()
+    else
+        self:_RemoveBlurEffect()
+    end
+end
+
+-- Set blur size
+function Container:SetBlurSize(size)
+    self.BlurSize = size
+    
+    if self.BlurEffect then
+        Utilities.Tween(self.BlurEffect, { Size = size }, 0.2)
+    end
 end
 
 return Container

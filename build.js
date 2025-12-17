@@ -220,6 +220,8 @@ function UIFramework.CreatePanel(config)
         HeaderTransparency = config.HeaderTransparency,
         SidebarTransparency = config.SidebarTransparency,
         ContentTransparency = config.ContentTransparency,
+        BlurEnabled = config.BlurEnabled or false,
+        BlurSize = config.BlurSize,
         Parent = config.Parent,
         OnClose = config.OnClose,
         OnMinimize = config.OnMinimize,
@@ -244,16 +246,25 @@ function UIFramework.CreateSection(config)
     })
 end
 
--- Create divider
+-- Create divider (responds to theme changes)
 function UIFramework.CreateDivider(config)
     config = config or {}
-    return Utilities.Create("Frame", {
+    local divider = Utilities.Create("Frame", {
         Name = "Divider",
         Size = config.Size or UDim2.new(1, 0, 0, 1),
         BackgroundColor3 = config.Color or Theme.Colors.SurfaceBorder,
         BorderSizePixel = 0,
         Parent = config.Parent
     })
+    
+    -- Register for theme updates (only if no custom color specified)
+    if not config.Color then
+        Theme.RegisterComponent(divider, {
+            BackgroundColor3 = "SurfaceBorder"
+        })
+    end
+    
+    return divider
 end
 
 -- Create spacer
