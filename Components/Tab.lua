@@ -391,14 +391,22 @@ function Tab:ApplyTheme()
     -- Use white text on active tab for visibility
     local activeTextColor = Color3.fromRGB(255, 255, 255)
     
-    -- Update tab bar background
-    if self.TabBar then
-        Utilities.Tween(self.TabBar, { BackgroundColor3 = Theme.Colors.BackgroundSecondary }, 0.2)
+    -- Update header background (tab bar)
+    if self.Header then
+        Utilities.Tween(self.Header, { BackgroundColor3 = Theme.Colors.BackgroundSecondary }, 0.2)
+        
+        -- Update border
+        local border = self.Header:FindFirstChild("Border")
+        if border then
+            Utilities.Tween(border, { BackgroundColor3 = Theme.Colors.SurfaceBorder }, 0.2)
+        end
     end
     
-    -- Update content area
-    if self.ContentArea then
-        Utilities.Tween(self.ContentArea, { BackgroundColor3 = Theme.Colors.Background }, 0.2)
+    -- Update scroll bar color in tab contents
+    for tabId, tabContent in pairs(self.TabContents) do
+        if tabContent then
+            tabContent.ScrollBarImageColor3 = Theme.Colors.Primary
+        end
     end
     
     -- Update all tabs
@@ -421,7 +429,7 @@ function Tab:ApplyTheme()
         }, 0.2)
         
         Utilities.Tween(tabData.Indicator, {
-            BackgroundColor3 = Theme.Colors.TabActive,
+            BackgroundColor3 = Theme.Colors.Primary,
             BackgroundTransparency = isActive and 0 or 1
         }, 0.2)
     end

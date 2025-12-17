@@ -669,8 +669,9 @@ end
 -- Apply theme
 function Dropdown:ApplyTheme()
     if not self.Disabled then
+        -- Main button
         Utilities.Tween(self.MainButton, { BackgroundColor3 = Theme.Colors.InputBackground }, 0.2)
-        Utilities.Tween(self.Stroke, { Color = Theme.Colors.InputBorder }, 0.2)
+        Utilities.Tween(self.Stroke, { Color = self.IsOpen and Theme.Colors.Primary or Theme.Colors.InputBorder }, 0.2)
         Utilities.Tween(self.SelectedText, { 
             TextColor3 = self:_HasValue() and Theme.Colors.TextPrimary or Theme.Colors.TextMuted 
         }, 0.2)
@@ -678,9 +679,34 @@ function Dropdown:ApplyTheme()
         if self.IconLabel then
             Utilities.Tween(self.IconLabel, { TextColor3 = Theme.Colors.TextSecondary }, 0.2)
         end
+        
+        -- Panel
         if self.Panel then
             Utilities.Tween(self.Panel, { BackgroundColor3 = Theme.Colors.DropdownBackground }, 0.2)
+            
+            -- Panel stroke
+            local panelStroke = self.Panel:FindFirstChildOfClass("UIStroke")
+            if panelStroke then
+                Utilities.Tween(panelStroke, { Color = Theme.Colors.SurfaceBorder }, 0.2)
+            end
         end
+        
+        -- Search box
+        if self.SearchBox then
+            Utilities.Tween(self.SearchBox, { 
+                BackgroundColor3 = Theme.Colors.BackgroundTertiary,
+                TextColor3 = Theme.Colors.TextPrimary
+            }, 0.2)
+            self.SearchBox.PlaceholderColor3 = Theme.Colors.TextMuted
+        end
+        
+        -- Options container scrollbar
+        if self.OptionsContainer then
+            self.OptionsContainer.ScrollBarImageColor3 = Theme.Colors.Primary
+        end
+        
+        -- Rebuild options to update all colors
+        self:_BuildOptions()
     end
 end
 

@@ -754,16 +754,18 @@ UIFramework.CreateSpacer({ Parent = aboutTab })
 local features = {
     { icon = "cube", text = "Container - Panel with sidebar navigation" },
     { icon = "font", text = "Label - Text display with icon support" },
-    { icon = "keyboard", text = "Input - Text input with validation" },
+    { icon = "keyboard", text = "Input - Text input with label support" },
     { icon = "hand-pointer", text = "Button - Multiple variants and states" },
     { icon = "toggle-on", text = "Toggle - On/Off switches" },
     { icon = "sliders", text = "Slider - Range selection" },
-    { icon = "square-check", text = "Checkbox - Multi-select options" },
+    { icon = "square-check", text = "Checkbox - Checkbox on right side" },
     { icon = "list", text = "Dropdown - Single and multiple selection" },
     { icon = "folder", text = "Tab - Navigation component" },
     { icon = "expand", text = "Resizable - Drag corner to resize panel" },
+    { icon = "move", text = "Draggable - Move panel from anywhere" },
     { icon = "eye", text = "Transparency - Configurable panel transparency" },
-    { icon = "palette", text = "Themes - 11 built-in color themes" }
+    { icon = "palette", text = "Themes - 11 built-in color themes" },
+    { icon = "circle", text = "macOS Style - Circular minimize/close buttons" }
 }
 
 UIFramework.CreateSection({
@@ -858,15 +860,15 @@ UIFramework.CreateSection({
 
 local tips = {
     "🎨 Change themes from the Settings tab",
+    "🖱️ Drag from anywhere on the panel to move it",
     "📐 Drag the bottom-right corner to resize the panel",
+    "⚪ White circle = Minimize, 🔴 Red circle = Close",
     "🔍 Use searchable dropdowns for large option lists",
     "⌨️ Press Enter to submit input fields",
     "📜 Scroll bar appears automatically when content overflows",
-    "🎯 Minimize the panel by clicking the minimize button",
     "💾 All settings can have callbacks for real-time updates",
     "🔔 Use notifications to provide user feedback",
     "👁 Adjust panel transparency in Settings tab",
-    "✂️ Content is clipped to stay within panel boundaries",
 }
 
 for _, tip in ipairs(tips) do
