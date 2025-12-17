@@ -65,16 +65,15 @@ function Label:_Build()
         Padding = Theme.Spacing.SM
     })
     
-    -- Icon
+    -- Icon (ImageLabel)
     if self.Icon then
-        self.IconLabel = Utilities.Create("TextLabel", {
+        self.IconLabel = Utilities.Create("ImageLabel", {
             Name = "Icon",
             Size = UDim2.new(0, self.TextSize, 0, self.TextSize),
             BackgroundTransparency = 1,
-            Text = Icons.Get(self.Icon),
-            TextColor3 = self.TextColor,
-            TextSize = self.TextSize,
-            Font = self.Font,
+            Image = Icons.Get(self.Icon),
+            ImageColor3 = self.TextColor,
+            ScaleType = Enum.ScaleType.Fit,
             LayoutOrder = 1,
             Parent = self.Frame
         })
@@ -125,7 +124,7 @@ end
 function Label:SetIcon(iconName)
     self.Icon = iconName
     if self.IconLabel then
-        self.IconLabel.Text = Icons.Get(iconName)
+        self.IconLabel.Image = Icons.Get(iconName)
     end
 end
 
@@ -134,7 +133,7 @@ function Label:SetColor(color)
     self.TextColor = color
     self.TextLabel.TextColor3 = color
     if self.IconLabel then
-        self.IconLabel.TextColor3 = color
+        self.IconLabel.ImageColor3 = color
     end
 end
 
@@ -149,7 +148,7 @@ function Label:ApplyTheme()
         Utilities.Tween(self.TextLabel, { TextColor3 = self.TextColor or Theme.Colors.TextPrimary }, 0.2)
     end
     if self.IconLabel then
-        Utilities.Tween(self.IconLabel, { TextColor3 = self.TextColor or Theme.Colors.TextPrimary }, 0.2)
+        Utilities.Tween(self.IconLabel, { ImageColor3 = self.TextColor or Theme.Colors.TextPrimary }, 0.2)
     end
 end
 

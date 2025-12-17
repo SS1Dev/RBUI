@@ -88,27 +88,27 @@ function Dropdown:_Build()
         Parent = self.Frame
     })
     
-    Utilities.ApplyCorner(self.MainButton, Theme.BorderRadius.MD)
+    Utilities.ApplyCorner(self.MainButton, Theme.BorderRadius.LG)
     self.Stroke = Utilities.ApplyStroke(self.MainButton, {
         Color = Theme.Colors.InputBorder,
-        Thickness = 1
+        Thickness = 1,
+        Transparency = 0.5
     })
     
     -- Content container
     local contentPadding = Theme.Spacing.MD
     
-    -- Icon
+    -- Icon (ImageLabel)
     if self.Icon then
-        self.IconLabel = Utilities.Create("TextLabel", {
+        self.IconLabel = Utilities.Create("ImageLabel", {
             Name = "Icon",
-            Size = UDim2.new(0, 20, 0, 20),
+            Size = UDim2.new(0, 18, 0, 18),
             Position = UDim2.new(0, contentPadding, 0.5, 0),
             AnchorPoint = Vector2.new(0, 0.5),
             BackgroundTransparency = 1,
-            Text = Icons.Get(self.Icon),
-            TextColor3 = Theme.Colors.TextSecondary,
-            TextSize = 16,
-            Font = Theme.Typography.FontFamily,
+            Image = Icons.Get(self.Icon),
+            ImageColor3 = Theme.Colors.TextSecondary,
+            ScaleType = Enum.ScaleType.Fit,
             Parent = self.MainButton
         })
     end
@@ -129,17 +129,16 @@ function Dropdown:_Build()
         Parent = self.MainButton
     })
     
-    -- Arrow icon
-    self.Arrow = Utilities.Create("TextLabel", {
+    -- Arrow icon (ImageLabel)
+    self.Arrow = Utilities.Create("ImageLabel", {
         Name = "Arrow",
-        Size = UDim2.new(0, 20, 0, 20),
-        Position = UDim2.new(1, -contentPadding - 20, 0.5, 0),
+        Size = UDim2.new(0, 16, 0, 16),
+        Position = UDim2.new(1, -contentPadding - 16, 0.5, 0),
         AnchorPoint = Vector2.new(0, 0.5),
         BackgroundTransparency = 1,
-        Text = Icons.Get("chevron-down"),
-        TextColor3 = Theme.Colors.TextSecondary,
-        TextSize = 14,
-        Font = Theme.Typography.FontFamily,
+        Image = Icons.Get("chevron-down"),
+        ImageColor3 = Theme.Colors.TextSecondary,
+        ScaleType = Enum.ScaleType.Fit,
         Parent = self.MainButton
     })
     
@@ -608,16 +607,16 @@ function Dropdown:SetDisabled(disabled)
         self:Close()
         self.MainButton.BackgroundColor3 = Theme.Colors.BackgroundTertiary
         self.SelectedText.TextColor3 = Theme.Colors.TextDisabled
-        self.Arrow.TextColor3 = Theme.Colors.TextDisabled
+        self.Arrow.ImageColor3 = Theme.Colors.TextDisabled
         if self.IconLabel then
-            self.IconLabel.TextColor3 = Theme.Colors.TextDisabled
+            self.IconLabel.ImageColor3 = Theme.Colors.TextDisabled
         end
     else
         self.MainButton.BackgroundColor3 = Theme.Colors.InputBackground
         self.SelectedText.TextColor3 = self:_HasValue() and Theme.Colors.TextPrimary or Theme.Colors.TextMuted
-        self.Arrow.TextColor3 = Theme.Colors.TextSecondary
+        self.Arrow.ImageColor3 = Theme.Colors.TextSecondary
         if self.IconLabel then
-            self.IconLabel.TextColor3 = Theme.Colors.TextSecondary
+            self.IconLabel.ImageColor3 = Theme.Colors.TextSecondary
         end
     end
 end
@@ -635,12 +634,12 @@ function Dropdown:ApplyTheme()
         Utilities.Tween(self.SelectedText, { 
             TextColor3 = self:_HasValue() and Theme.Colors.TextPrimary or Theme.Colors.TextMuted 
         }, 0.2)
-        Utilities.Tween(self.Arrow, { TextColor3 = Theme.Colors.TextSecondary }, 0.2)
+        Utilities.Tween(self.Arrow, { ImageColor3 = Theme.Colors.TextSecondary }, 0.2)
         if self.IconLabel then
-            Utilities.Tween(self.IconLabel, { TextColor3 = Theme.Colors.TextSecondary }, 0.2)
+            Utilities.Tween(self.IconLabel, { ImageColor3 = Theme.Colors.TextSecondary }, 0.2)
         end
-        if self.DropdownFrame then
-            Utilities.Tween(self.DropdownFrame, { BackgroundColor3 = Theme.Colors.DropdownBackground }, 0.2)
+        if self.Panel then
+            Utilities.Tween(self.Panel, { BackgroundColor3 = Theme.Colors.DropdownBackground }, 0.2)
         end
     end
 end

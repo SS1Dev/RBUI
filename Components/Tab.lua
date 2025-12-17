@@ -187,17 +187,16 @@ function Tab:_BuildTab(tabConfig, index)
         Padding = Theme.Spacing.SM
     })
     
-    -- Icon
+    -- Icon (ImageLabel)
     local iconLabel
     if tabIcon then
-        iconLabel = Utilities.Create("TextLabel", {
+        iconLabel = Utilities.Create("ImageLabel", {
             Name = "Icon",
             Size = UDim2.new(0, 16, 0, 16),
             BackgroundTransparency = 1,
-            Text = Icons.Get(tabIcon),
-            TextColor3 = Theme.Colors.TextSecondary,
-            TextSize = 14,
-            Font = Theme.Typography.FontFamily,
+            Image = Icons.Get(tabIcon),
+            ImageColor3 = Theme.Colors.TextSecondary,
+            ScaleType = Enum.ScaleType.Fit,
             LayoutOrder = 1,
             Parent = contentContainer
         })
@@ -302,7 +301,7 @@ function Tab:SelectTab(tabId)
             BackgroundColor3 = Theme.Colors.TabInactive
         })
         if currentTab.Icon then
-            Utilities.Tween(currentTab.Icon, { TextColor3 = Theme.Colors.TextSecondary })
+            Utilities.Tween(currentTab.Icon, { ImageColor3 = Theme.Colors.TextSecondary })
         end
         Utilities.Tween(currentTab.Text, { TextColor3 = Theme.Colors.TextSecondary })
         Utilities.Tween(currentTab.Indicator, { BackgroundTransparency = 1 })
@@ -322,7 +321,7 @@ function Tab:SelectTab(tabId)
             BackgroundColor3 = Theme.Colors.TabActive
         })
         if newTab.Icon then
-            Utilities.Tween(newTab.Icon, { TextColor3 = Theme.Colors.TextPrimary })
+            Utilities.Tween(newTab.Icon, { ImageColor3 = Theme.Colors.TextPrimary })
         end
         Utilities.Tween(newTab.Text, { TextColor3 = Theme.Colors.TextPrimary })
         Utilities.Tween(newTab.Indicator, { BackgroundTransparency = 0 })
@@ -410,7 +409,7 @@ function Tab:ApplyTheme()
         
         if tabData.Icon then
             Utilities.Tween(tabData.Icon, {
-                TextColor3 = isActive and Theme.Colors.TextPrimary or Theme.Colors.TextSecondary
+                ImageColor3 = isActive and Theme.Colors.TextPrimary or Theme.Colors.TextSecondary
             }, 0.2)
         end
         

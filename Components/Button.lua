@@ -104,12 +104,13 @@ function Button:_Build()
         Parent = self.Parent
     })
     
-    Utilities.ApplyCorner(self.Btn, Theme.BorderRadius.MD)
+    Utilities.ApplyCorner(self.Btn, Theme.BorderRadius.LG)
     
     if colors.Transparent then
         Utilities.ApplyStroke(self.Btn, {
             Color = Theme.Colors.SurfaceBorder,
-            Thickness = 1
+            Thickness = 1,
+            Transparency = 0.5
         })
     end
     
@@ -130,14 +131,13 @@ function Button:_Build()
     
     -- Icon (left)
     if self.Icon and self.IconPosition == "left" then
-        self.IconLabel = Utilities.Create("TextLabel", {
+        self.IconLabel = Utilities.Create("ImageLabel", {
             Name = "Icon",
             Size = UDim2.new(0, 16, 0, 16),
             BackgroundTransparency = 1,
-            Text = Icons.Get(self.Icon),
-            TextColor3 = colors.Text,
-            TextSize = 14,
-            Font = Theme.Typography.FontFamily,
+            Image = Icons.Get(self.Icon),
+            ImageColor3 = colors.Text,
+            ScaleType = Enum.ScaleType.Fit,
             LayoutOrder = 1,
             Parent = self.ContentContainer
         })
@@ -161,30 +161,28 @@ function Button:_Build()
     
     -- Icon (right)
     if self.Icon and self.IconPosition == "right" then
-        self.IconLabel = Utilities.Create("TextLabel", {
+        self.IconLabel = Utilities.Create("ImageLabel", {
             Name = "Icon",
             Size = UDim2.new(0, 16, 0, 16),
             BackgroundTransparency = 1,
-            Text = Icons.Get(self.Icon),
-            TextColor3 = colors.Text,
-            TextSize = 14,
-            Font = Theme.Typography.FontFamily,
+            Image = Icons.Get(self.Icon),
+            ImageColor3 = colors.Text,
+            ScaleType = Enum.ScaleType.Fit,
             LayoutOrder = 3,
             Parent = self.ContentContainer
         })
     end
     
     -- Loading spinner
-    self.LoadingSpinner = Utilities.Create("TextLabel", {
+    self.LoadingSpinner = Utilities.Create("ImageLabel", {
         Name = "LoadingSpinner",
         Size = UDim2.new(0, 16, 0, 16),
         Position = UDim2.new(0.5, 0, 0.5, 0),
         AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundTransparency = 1,
-        Text = Icons.Get("spinner"),
-        TextColor3 = colors.Text,
-        TextSize = 14,
-        Font = Theme.Typography.FontFamily,
+        Image = Icons.Get("loader-2"),
+        ImageColor3 = colors.Text,
+        ScaleType = Enum.ScaleType.Fit,
         Visible = false,
         Parent = self.Btn
     })
@@ -263,7 +261,7 @@ end
 function Button:SetIcon(iconName)
     self.Icon = iconName
     if self.IconLabel then
-        self.IconLabel.Text = Icons.Get(iconName)
+        self.IconLabel.Image = Icons.Get(iconName)
     end
 end
 
@@ -277,7 +275,7 @@ function Button:SetDisabled(disabled)
             self.TextLabel.TextColor3 = Theme.Colors.TextDisabled
         end
         if self.IconLabel then
-            self.IconLabel.TextColor3 = Theme.Colors.TextDisabled
+            self.IconLabel.ImageColor3 = Theme.Colors.TextDisabled
         end
     else
         local colors = self:_GetVariantColors()
@@ -286,7 +284,7 @@ function Button:SetDisabled(disabled)
             self.TextLabel.TextColor3 = colors.Text
         end
         if self.IconLabel then
-            self.IconLabel.TextColor3 = colors.Text
+            self.IconLabel.ImageColor3 = colors.Text
         end
     end
 end
@@ -324,7 +322,7 @@ function Button:SetVariant(variant)
         self.TextLabel.TextColor3 = colors.Text
     end
     if self.IconLabel then
-        self.IconLabel.TextColor3 = colors.Text
+        self.IconLabel.ImageColor3 = colors.Text
     end
 end
 
@@ -342,7 +340,7 @@ function Button:ApplyTheme()
             Utilities.Tween(self.TextLabel, { TextColor3 = colors.Text }, 0.2)
         end
         if self.IconLabel then
-            Utilities.Tween(self.IconLabel, { TextColor3 = colors.Text }, 0.2)
+            Utilities.Tween(self.IconLabel, { ImageColor3 = colors.Text }, 0.2)
         end
     end
 end

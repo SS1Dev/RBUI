@@ -206,16 +206,20 @@ function UIFramework.CreatePanel(config)
     
     return Container.new({
         Title = config.Title or "Panel",
-        Size = config.Size or UDim2.new(0, 900, 0, 650),
+        Size = config.Size or UDim2.new(0, 700, 0, 500),
         Position = config.Position,
         Draggable = config.Draggable ~= false,
         Closable = config.Closable ~= false,
         Minimizable = config.Minimizable ~= false,
+        Resizable = config.Resizable ~= false,
         ShowSidebar = config.ShowSidebar ~= false,
         SidebarWidth = config.SidebarWidth,
+        MinWidth = config.MinWidth,
+        MinHeight = config.MinHeight,
         Parent = config.Parent,
         OnClose = config.OnClose,
-        OnMinimize = config.OnMinimize
+        OnMinimize = config.OnMinimize,
+        OnResize = config.OnResize
     })
 end
 

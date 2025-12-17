@@ -742,15 +742,17 @@ Theme.Spacing = {
 }
 
 -- ═══════════════════════════════════════════════════════════════
--- BORDER RADIUS (Compact)
+-- BORDER RADIUS (Modern - More Rounded)
 -- ═══════════════════════════════════════════════════════════════
 
 Theme.BorderRadius = {
     None = UDim.new(0, 0),
-    SM = UDim.new(0, 4),
-    MD = UDim.new(0, 6),
-    LG = UDim.new(0, 8),
-    XL = UDim.new(0, 12),
+    XS = UDim.new(0, 4),
+    SM = UDim.new(0, 6),
+    MD = UDim.new(0, 8),
+    LG = UDim.new(0, 12),
+    XL = UDim.new(0, 16),
+    XXL = UDim.new(0, 20),
     Full = UDim.new(0, 9999),
 }
 
@@ -760,22 +762,36 @@ Theme.BorderRadius = {
 
 Theme.Sizes = {
     -- Component Heights (Compact)
-    InputHeight = 28,
-    ButtonHeight = 28,
-    ToggleHeight = 18,
-    ToggleWidth = 36,
-    CheckboxSize = 16,
-    SliderHeight = 4,
-    SliderKnobSize = 14,
+    InputHeight = 32,
+    ButtonHeight = 32,
+    ToggleHeight = 20,
+    ToggleWidth = 40,
+    CheckboxSize = 18,
+    SliderHeight = 6,
+    SliderKnobSize = 16,
     
     -- Layout (Compact)
     SidebarWidth = 180,
-    HeaderHeight = 40,
+    HeaderHeight = 44,
     
     -- Icons (Compact)
     IconSmall = 12,
     IconMedium = 14,
     IconLarge = 16,
+    
+    -- Resize Handle
+    ResizeHandleSize = 16,
+    MinPanelWidth = 400,
+    MinPanelHeight = 300,
+}
+
+-- ═══════════════════════════════════════════════════════════════
+-- BORDER SETTINGS (Modern - Subtle)
+-- ═══════════════════════════════════════════════════════════════
+
+Theme.Border = {
+    Thickness = 1,
+    Opacity = 0.3, -- Subtle borders
 }
 
 -- ═══════════════════════════════════════════════════════════════

@@ -46,11 +46,15 @@ function Container.new(config)
     self.Draggable = config.Draggable ~= false
     self.Closable = config.Closable ~= false
     self.Minimizable = config.Minimizable ~= false
+    self.Resizable = config.Resizable ~= false -- Enable resize by default
     self.ShowSidebar = config.ShowSidebar ~= false
     self.SidebarWidth = config.SidebarWidth or Theme.Sizes.SidebarWidth
+    self.MinWidth = config.MinWidth or Theme.Sizes.MinPanelWidth
+    self.MinHeight = config.MinHeight or Theme.Sizes.MinPanelHeight
     self.Parent = config.Parent or Players.LocalPlayer:WaitForChild("PlayerGui")
     self.OnClose = config.OnClose
     self.OnMinimize = config.OnMinimize
+    self.OnResize = config.OnResize
     
     self.Tabs = {}
     self.CurrentTab = nil
@@ -73,7 +77,7 @@ function Container:_Build()
         Parent = self.Parent
     })
     
-    -- Main Frame
+    -- Main Frame (Modern - No Border, Soft Shadow)
     self.Frame = Utilities.Create("Frame", {
         Name = "MainFrame",
         Size = self.Size,
@@ -85,12 +89,13 @@ function Container:_Build()
         Parent = self.ScreenGui
     })
     
-    Utilities.ApplyCorner(self.Frame, Theme.BorderRadius.XL)
-    Utilities.ApplyStroke(self.Frame, {
-        Color = Theme.Colors.SurfaceBorder,
-        Thickness = 1
-    })
-    Utilities.CreateShadow(self.Frame, 8, 24)
+    Utilities.ApplyCorner(self.Frame, Theme.BorderRadius.XXL)
+    Utilities.CreateShadow(self.Frame, 12, 32)
+    
+    -- Resize Handle (Bottom-Right Corner)
+    if self.Resizable then
+        self:_BuildResizeHandle()
+    end
     
     -- Header
     self:_BuildHeader()
@@ -128,12 +133,13 @@ function Container:_BuildHeader()
         Parent = self.Frame
     })
     
-    -- Header bottom border
+    -- Header bottom border (subtle)
     Utilities.Create("Frame", {
         Name = "Border",
         Size = UDim2.new(1, 0, 0, 1),
         Position = UDim2.new(0, 0, 1, -1),
         BackgroundColor3 = Theme.Colors.SurfaceBorder,
+        BackgroundTransparency = 0.6,
         BorderSizePixel = 0,
         Parent = self.Header
     })
@@ -149,15 +155,16 @@ function Container:_BuildHeader()
     })
     Utilities.ApplyCorner(logoContainer, Theme.BorderRadius.SM)
     
-    -- Logo Icon
-    Utilities.Create("TextLabel", {
+    -- Logo Icon (ImageLabel)
+    Utilities.Create("ImageLabel", {
         Name = "LogoIcon",
-        Size = UDim2.new(1, 0, 1, 0),
+        Size = UDim2.new(1, -8, 1, -8),
+        Position = UDim2.new(0.5, 0, 0.5, 0),
+        AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundTransparency = 1,
-        Text = Icons.Get("cubes"),
-        TextColor3 = Theme.Colors.TextPrimary,
-        TextSize = 14,
-        Font = Theme.Typography.FontFamily,
+        Image = Icons.Get("box"),
+        ImageColor3 = Theme.Colors.TextPrimary,
+        ScaleType = Enum.ScaleType.Fit,
         Parent = logoContainer
     })
     
@@ -243,6 +250,74 @@ function Container:_CreateWindowControl(iconName, callback, hoverColor)
     return btn
 end
 
+-- Build resize handle
+function Container:_BuildResizeHandle()
+    local UserInputService = game:GetService("UserInputService")
+    
+    self.ResizeHandle = Utilities.Create("TextButton", {
+        Name = "ResizeHandle",
+        Size = UDim2.new(0, 20, 0, 20),
+        Position = UDim2.new(1, -20, 1, -20),
+        BackgroundTransparency = 1,
+        Text = "⋱",
+        TextColor3 = Theme.Colors.TextMuted,
+        TextSize = 14,
+        Font = Enum.Font.GothamBold,
+        ZIndex = 100,
+        Parent = self.Frame
+    })
+    
+    local isResizing = false
+    local startPos = nil
+    local startSize = nil
+    
+    self.ResizeHandle.MouseEnter:Connect(function()
+        Utilities.Tween(self.ResizeHandle, { TextColor3 = Theme.Colors.Primary }, 0.15)
+    end)
+    
+    self.ResizeHandle.MouseLeave:Connect(function()
+        if not isResizing then
+            Utilities.Tween(self.ResizeHandle, { TextColor3 = Theme.Colors.TextMuted }, 0.15)
+        end
+    end)
+    
+    self.ResizeHandle.MouseButton1Down:Connect(function()
+        isResizing = true
+        startPos = UserInputService:GetMouseLocation()
+        startSize = self.Frame.Size
+        
+        local moveConnection
+        local releaseConnection
+        
+        moveConnection = UserInputService.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement then
+                local currentPos = UserInputService:GetMouseLocation()
+                local delta = currentPos - startPos
+                
+                local newWidth = math.max(self.MinWidth, startSize.X.Offset + delta.X)
+                local newHeight = math.max(self.MinHeight, startSize.Y.Offset + delta.Y)
+                
+                self.Frame.Size = UDim2.new(0, newWidth, 0, newHeight)
+                self.Size = self.Frame.Size
+                
+                if self.OnResize then
+                    self.OnResize(newWidth, newHeight)
+                end
+            end
+        end)
+        
+        releaseConnection = UserInputService.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                isResizing = false
+                Utilities.Tween(self.ResizeHandle, { TextColor3 = Theme.Colors.TextMuted }, 0.15)
+                
+                if moveConnection then moveConnection:Disconnect() end
+                if releaseConnection then releaseConnection:Disconnect() end
+            end
+        end)
+    end)
+end
+
 -- Build sidebar
 function Container:_BuildSidebar()
     self.Sidebar = Utilities.Create("Frame", {
@@ -253,12 +328,13 @@ function Container:_BuildSidebar()
         Parent = self.BodyContainer
     })
     
-    -- Sidebar right border
+    -- Sidebar right border (subtle)
     Utilities.Create("Frame", {
         Name = "Border",
         Size = UDim2.new(0, 1, 1, 0),
         Position = UDim2.new(1, -1, 0, 0),
         BackgroundColor3 = Theme.Colors.SurfaceBorder,
+        BackgroundTransparency = 0.5,
         BorderSizePixel = 0,
         Parent = self.Sidebar
     })
@@ -336,17 +412,16 @@ function Container:AddTab(config)
     
     Utilities.ApplyCorner(tabButton, Theme.BorderRadius.SM)
     
-    -- Tab Icon
-    local iconLabel = Utilities.Create("TextLabel", {
+    -- Tab Icon (ImageLabel)
+    local iconLabel = Utilities.Create("ImageLabel", {
         Name = "Icon",
         Size = UDim2.new(0, 16, 0, 16),
         Position = UDim2.new(0, Theme.Spacing.SM, 0.5, 0),
         AnchorPoint = Vector2.new(0, 0.5),
         BackgroundTransparency = 1,
-        Text = Icons.Get(tabIcon),
-        TextColor3 = Theme.Colors.TextSecondary,
-        TextSize = 12,
-        Font = Theme.Typography.FontFamily,
+        Image = Icons.Get(tabIcon),
+        ImageColor3 = Theme.Colors.TextSecondary,
+        ScaleType = Enum.ScaleType.Fit,
         Parent = tabButton
     })
     
@@ -437,7 +512,7 @@ function Container:SelectTab(tabId)
     if self.CurrentTab and self.Tabs[self.CurrentTab] then
         local currentTab = self.Tabs[self.CurrentTab]
         Utilities.Tween(currentTab.Button, { BackgroundTransparency = 1 })
-        Utilities.Tween(currentTab.Icon, { TextColor3 = Theme.Colors.TextSecondary })
+        Utilities.Tween(currentTab.Icon, { ImageColor3 = Theme.Colors.TextSecondary })
         Utilities.Tween(currentTab.Text, { TextColor3 = Theme.Colors.TextSecondary })
         Utilities.Tween(currentTab.Indicator, { BackgroundTransparency = 1 })
         currentTab.Content.Visible = false
@@ -452,7 +527,7 @@ function Container:SelectTab(tabId)
             BackgroundTransparency = 0,
             BackgroundColor3 = Theme.Colors.Primary
         })
-        Utilities.Tween(newTab.Icon, { TextColor3 = Theme.Colors.TextPrimary })
+        Utilities.Tween(newTab.Icon, { ImageColor3 = Theme.Colors.TextPrimary })
         Utilities.Tween(newTab.Text, { TextColor3 = Theme.Colors.TextPrimary })
         Utilities.Tween(newTab.Indicator, { BackgroundTransparency = 0 })
         newTab.Content.Visible = true
@@ -553,7 +628,7 @@ function Container:ApplyTheme()
             Utilities.Tween(logoContainer, { BackgroundColor3 = Theme.Colors.Primary }, 0.2)
             local icon = logoContainer:FindFirstChild("LogoIcon")
             if icon then 
-                Utilities.Tween(icon, { TextColor3 = Theme.Colors.TextPrimary }, 0.2)
+                Utilities.Tween(icon, { ImageColor3 = Theme.Colors.TextPrimary }, 0.2)
             end
         end
         
@@ -606,7 +681,7 @@ function Container:ApplyTheme()
             local icon = tabData.Button:FindFirstChild("Icon")
             if icon then
                 Utilities.Tween(icon, {
-                    TextColor3 = isActive and Theme.Colors.TextPrimary or Theme.Colors.TextSecondary
+                    ImageColor3 = isActive and Theme.Colors.TextPrimary or Theme.Colors.TextSecondary
                 }, 0.2)
             end
             

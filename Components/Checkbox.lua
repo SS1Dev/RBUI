@@ -75,32 +75,33 @@ function Checkbox:_Build()
     Utilities.ApplyCorner(self.Box, Theme.BorderRadius.SM)
     self.BoxStroke = Utilities.ApplyStroke(self.Box, {
         Color = self.Value and Theme.Colors.Primary or Theme.Colors.InputBorder,
-        Thickness = 2
+        Thickness = 1,
+        Transparency = self.Value and 0 or 0.5
     })
     
-    -- Checkmark
-    self.Checkmark = Utilities.Create("TextLabel", {
+    -- Checkmark (ImageLabel)
+    self.Checkmark = Utilities.Create("ImageLabel", {
         Name = "Checkmark",
-        Size = UDim2.new(1, 0, 1, 0),
+        Size = UDim2.new(1, -4, 1, -4),
+        Position = UDim2.new(0.5, 0, 0.5, 0),
+        AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundTransparency = 1,
-        Text = Icons.Get("check"),
-        TextColor3 = Theme.Colors.TextPrimary,
-        TextSize = 12,
-        Font = Theme.Typography.FontFamily,
-        TextTransparency = self.Value and 0 or 1,
+        Image = Icons.Get("check"),
+        ImageColor3 = Theme.Colors.TextPrimary,
+        ImageTransparency = self.Value and 0 or 1,
+        ScaleType = Enum.ScaleType.Fit,
         Parent = self.Box
     })
     
-    -- Icon
+    -- Icon (ImageLabel)
     if self.Icon then
-        self.IconLabel = Utilities.Create("TextLabel", {
+        self.IconLabel = Utilities.Create("ImageLabel", {
             Name = "Icon",
-            Size = UDim2.new(0, 18, 0, 18),
+            Size = UDim2.new(0, 16, 0, 16),
             BackgroundTransparency = 1,
-            Text = Icons.Get(self.Icon),
-            TextColor3 = Theme.Colors.TextSecondary,
-            TextSize = 14,
-            Font = Theme.Typography.FontFamily,
+            Image = Icons.Get(self.Icon),
+            ImageColor3 = Theme.Colors.TextSecondary,
+            ScaleType = Enum.ScaleType.Fit,
             LayoutOrder = 2,
             Parent = self.Frame
         })
@@ -162,7 +163,7 @@ function Checkbox:SetValue(value)
     if value then
         Utilities.Tween(self.Box, { BackgroundColor3 = Theme.Colors.Primary })
         Utilities.Tween(self.BoxStroke, { Color = Theme.Colors.Primary })
-        Utilities.Tween(self.Checkmark, { TextTransparency = 0 })
+        Utilities.Tween(self.Checkmark, { ImageTransparency = 0 })
         Utilities.SpringTween(self.Box, { Size = UDim2.new(0, Theme.Sizes.CheckboxSize + 2, 0, Theme.Sizes.CheckboxSize + 2) }, 0.15)
         task.delay(0.15, function()
             if self.Box then
@@ -172,7 +173,7 @@ function Checkbox:SetValue(value)
     else
         Utilities.Tween(self.Box, { BackgroundColor3 = Theme.Colors.InputBackground })
         Utilities.Tween(self.BoxStroke, { Color = Theme.Colors.InputBorder })
-        Utilities.Tween(self.Checkmark, { TextTransparency = 1 })
+        Utilities.Tween(self.Checkmark, { ImageTransparency = 1 })
     end
     
     if self.OnChange then
@@ -198,18 +199,18 @@ function Checkbox:SetDisabled(disabled)
     if disabled then
         self.Box.BackgroundColor3 = Theme.Colors.BackgroundTertiary
         self.BoxStroke.Color = Theme.Colors.BackgroundTertiary
-        self.Checkmark.TextColor3 = Theme.Colors.TextMuted
+        self.Checkmark.ImageColor3 = Theme.Colors.TextMuted
         self.TextLabel.TextColor3 = Theme.Colors.TextDisabled
         if self.IconLabel then
-            self.IconLabel.TextColor3 = Theme.Colors.TextDisabled
+            self.IconLabel.ImageColor3 = Theme.Colors.TextDisabled
         end
     else
         self.Box.BackgroundColor3 = self.Value and Theme.Colors.Primary or Theme.Colors.InputBackground
         self.BoxStroke.Color = self.Value and Theme.Colors.Primary or Theme.Colors.InputBorder
-        self.Checkmark.TextColor3 = Theme.Colors.TextPrimary
+        self.Checkmark.ImageColor3 = Theme.Colors.TextPrimary
         self.TextLabel.TextColor3 = Theme.Colors.TextPrimary
         if self.IconLabel then
-            self.IconLabel.TextColor3 = Theme.Colors.TextSecondary
+            self.IconLabel.ImageColor3 = Theme.Colors.TextSecondary
         end
     end
 end
@@ -228,10 +229,10 @@ function Checkbox:ApplyTheme()
         Utilities.Tween(self.BoxStroke, { 
             Color = self.Value and Theme.Colors.Primary or Theme.Colors.InputBorder 
         }, 0.2)
-        Utilities.Tween(self.Checkmark, { TextColor3 = Theme.Colors.TextPrimary }, 0.2)
+        Utilities.Tween(self.Checkmark, { ImageColor3 = Theme.Colors.TextPrimary }, 0.2)
         Utilities.Tween(self.TextLabel, { TextColor3 = Theme.Colors.TextPrimary }, 0.2)
         if self.IconLabel then
-            Utilities.Tween(self.IconLabel, { TextColor3 = Theme.Colors.TextSecondary }, 0.2)
+            Utilities.Tween(self.IconLabel, { ImageColor3 = Theme.Colors.TextSecondary }, 0.2)
         end
     end
 end
