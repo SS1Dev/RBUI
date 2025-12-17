@@ -470,13 +470,12 @@ function Container:_BuildContentArea()
         Size = UDim2.new(1, 0, 1, 0),
         BackgroundTransparency = 1,
         BorderSizePixel = 0,
-        ScrollBarThickness = 6,
+        ScrollBarThickness = 4,
         ScrollBarImageColor3 = Theme.Colors.Primary,
         ScrollBarImageTransparency = 0.3,
         VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar,
         HorizontalScrollBarInset = Enum.ScrollBarInset.None,
         CanvasSize = UDim2.new(0, 0, 0, 0),
-        AutomaticCanvasSize = Enum.AutomaticSize.Y,
         ScrollingDirection = Enum.ScrollingDirection.Y,
         ElasticBehavior = Enum.ElasticBehavior.WhenScrollable,
         ClipsDescendants = true, -- Prevent content overflow
@@ -565,6 +564,7 @@ function Container:AddTab(config)
         Size = UDim2.new(1, 0, 0, 0), -- Width 100%, Height auto
         AutomaticSize = Enum.AutomaticSize.Y, -- Auto height based on content
         BackgroundTransparency = 1,
+        ClipsDescendants = false, -- Allow dropdowns to show
         Visible = false,
         Parent = self.Content
     })
@@ -578,6 +578,14 @@ function Container:AddTab(config)
         SortOrder = Enum.SortOrder.LayoutOrder,
         Parent = tabContent
     })
+    
+    -- Update canvas size when content changes
+    listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        if tabContent.Visible then
+            local padding = Theme.Spacing.MD + Theme.Spacing.XL -- Top + Bottom padding
+            self.Content.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + padding)
+        end
+    end)
     
     -- Store tab data
     self.Tabs[tabId] = {
@@ -647,6 +655,13 @@ function Container:SelectTab(tabId)
         
         -- Reset scroll position when switching tabs
         self.Content.CanvasPosition = Vector2.new(0, 0)
+        
+        -- Recalculate canvas size for new tab
+        local listLayout = newTab.Content:FindFirstChildOfClass("UIListLayout")
+        if listLayout then
+            local padding = Theme.Spacing.MD + Theme.Spacing.XL
+            self.Content.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + padding)
+        end
     end
 end
 
