@@ -114,6 +114,7 @@ function Container:_Build()
         Size = UDim2.new(1, 0, 1, -Theme.Sizes.HeaderHeight),
         Position = UDim2.new(0, 0, 0, Theme.Sizes.HeaderHeight),
         BackgroundTransparency = 1,
+        ClipsDescendants = true, -- Prevent content overflow
         Parent = self.Frame
     })
     
@@ -412,6 +413,7 @@ function Container:_BuildSidebar()
         BackgroundColor3 = Theme.Colors.BackgroundSecondary,
         BackgroundTransparency = self.SidebarTransparency,
         BorderSizePixel = 0,
+        ClipsDescendants = true, -- Prevent content overflow
         Parent = self.BodyContainer
     })
     
@@ -439,6 +441,7 @@ function Container:_BuildSidebar()
         CanvasSize = UDim2.new(0, 0, 0, 0),
         AutomaticCanvasSize = Enum.AutomaticSize.Y,
         ScrollingDirection = Enum.ScrollingDirection.Y,
+        ClipsDescendants = true, -- Prevent content overflow
         Parent = self.Sidebar
     })
     
@@ -457,6 +460,7 @@ function Container:_BuildContentArea()
         Size = UDim2.new(1, -offsetX, 1, 0),
         Position = UDim2.new(0, offsetX, 0, 0),
         BackgroundTransparency = 1,
+        ClipsDescendants = true, -- Prevent content overflow
         Parent = self.BodyContainer
     })
     
@@ -474,6 +478,7 @@ function Container:_BuildContentArea()
         AutomaticCanvasSize = Enum.AutomaticSize.Y,
         ScrollingDirection = Enum.ScrollingDirection.Y,
         ElasticBehavior = Enum.ElasticBehavior.Always,
+        ClipsDescendants = true, -- Prevent content overflow
         Parent = self.ContentArea
     })
     
