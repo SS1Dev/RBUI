@@ -396,7 +396,6 @@ function Dropdown:_BuildOptions()
             selectedIcon.AnchorPoint = Vector2.new(0, 0.5)
             selectedIcon.ZIndex = 103
             selectedIcon.Parent = optBtn
-            })
         end
         
         -- Hover effect
