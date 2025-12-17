@@ -198,6 +198,12 @@ UIFramework.Container = Container
 -- Quick create Panel
 function UIFramework.CreatePanel(config)
     config = config or {}
+    
+    -- Set theme before creating panel if specified
+    if config.Theme then
+        Theme.SetTheme(config.Theme)
+    end
+    
     return Container.new({
         Title = config.Title or "Panel",
         Size = config.Size or UDim2.new(0, 900, 0, 650),

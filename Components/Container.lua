@@ -58,6 +58,7 @@ function Container.new(config)
     self.IsVisible = true
     
     self:_Build()
+    self:_RegisterThemeListener()
     
     return self
 end
@@ -529,6 +530,80 @@ function Container:SetTitle(title)
     if self.TitleLabel then
         self.TitleLabel.Text = title
     end
+end
+
+-- Apply current theme colors to all container elements
+function Container:ApplyTheme()
+    if not self.Frame then return end
+    
+    -- Main frame
+    self.Frame.BackgroundColor3 = Theme.Colors.Background
+    
+    -- Header
+    if self.Header then
+        self.Header.BackgroundColor3 = Theme.Colors.BackgroundSecondary
+        local border = self.Header:FindFirstChild("Border")
+        if border then border.BackgroundColor3 = Theme.Colors.SurfaceBorder end
+        
+        local logoContainer = self.Header:FindFirstChild("LogoContainer")
+        if logoContainer then
+            logoContainer.BackgroundColor3 = Theme.Colors.Primary
+            local icon = logoContainer:FindFirstChild("LogoIcon")
+            if icon then icon.TextColor3 = Theme.Colors.TextPrimary end
+        end
+        
+        if self.TitleLabel then
+            self.TitleLabel.TextColor3 = Theme.Colors.TextPrimary
+        end
+    end
+    
+    -- Sidebar
+    if self.Sidebar then
+        self.Sidebar.BackgroundColor3 = Theme.Colors.BackgroundSecondary
+        local border = self.Sidebar:FindFirstChild("Border")
+        if border then border.BackgroundColor3 = Theme.Colors.SurfaceBorder end
+    end
+    
+    -- Update tabs
+    for tabId, tabData in pairs(self.Tabs) do
+        if tabData.Button then
+            local isActive = tabId == self.CurrentTab
+            tabData.Button.BackgroundTransparency = isActive and 0 or 1
+            tabData.Button.BackgroundColor3 = Theme.Colors.Primary
+            
+            local icon = tabData.Button:FindFirstChild("Icon")
+            if icon then
+                icon.TextColor3 = isActive and Theme.Colors.TextPrimary or Theme.Colors.TextSecondary
+            end
+            
+            local text = tabData.Button:FindFirstChild("Text")
+            if text then
+                text.TextColor3 = isActive and Theme.Colors.TextPrimary or Theme.Colors.TextSecondary
+            end
+            
+            local indicator = tabData.Button:FindFirstChild("Indicator")
+            if indicator then
+                indicator.BackgroundColor3 = Theme.Colors.Primary
+                indicator.BackgroundTransparency = isActive and 0 or 1
+            end
+        end
+    end
+    
+    -- Content area
+    if self.ContentArea then
+        self.ContentArea.BackgroundColor3 = Theme.Colors.Background
+    end
+    
+    if self.Content then
+        self.Content.ScrollBarImageColor3 = Theme.Colors.Primary
+    end
+end
+
+-- Register for theme updates
+function Container:_RegisterThemeListener()
+    self._themeListenerId = Theme.OnThemeChange(function()
+        self:ApplyTheme()
+    end)
 end
 
 return Container

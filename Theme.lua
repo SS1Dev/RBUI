@@ -789,6 +789,59 @@ Theme.Animation = {
 }
 
 -- ═══════════════════════════════════════════════════════════════
+-- THEME CHANGE EVENT SYSTEM
+-- ═══════════════════════════════════════════════════════════════
+
+Theme._listeners = {}
+Theme._componentRegistry = {}
+
+-- Register a callback to be called when theme changes
+function Theme.OnThemeChange(callback)
+    table.insert(Theme._listeners, callback)
+    return #Theme._listeners -- Return listener ID for removal
+end
+
+-- Remove a theme change listener
+function Theme.RemoveListener(listenerId)
+    Theme._listeners[listenerId] = nil
+end
+
+-- Register a UI component for automatic theme updates
+function Theme.RegisterComponent(instance, propertyMap)
+    -- propertyMap = { BackgroundColor3 = "Background", TextColor3 = "TextPrimary", ... }
+    table.insert(Theme._componentRegistry, {
+        Instance = instance,
+        PropertyMap = propertyMap
+    })
+end
+
+-- Trigger all theme change callbacks
+function Theme._notifyListeners()
+    for _, callback in pairs(Theme._listeners) do
+        if type(callback) == "function" then
+            pcall(callback, Theme.CurrentTheme, Theme.Colors)
+        end
+    end
+    
+    -- Update registered components
+    for i = #Theme._componentRegistry, 1, -1 do
+        local entry = Theme._componentRegistry[i]
+        if entry.Instance and entry.Instance.Parent then
+            for property, colorKey in pairs(entry.PropertyMap) do
+                if Theme.Colors[colorKey] then
+                    pcall(function()
+                        entry.Instance[property] = Theme.Colors[colorKey]
+                    end)
+                end
+            end
+        else
+            -- Remove destroyed instances
+            table.remove(Theme._componentRegistry, i)
+        end
+    end
+end
+
+-- ═══════════════════════════════════════════════════════════════
 -- THEME FUNCTIONS
 -- ═══════════════════════════════════════════════════════════════
 
@@ -797,6 +850,7 @@ function Theme.SetTheme(themeName)
     if Theme.Presets[themeName] then
         Theme.CurrentTheme = themeName
         Theme.Colors = Theme.Presets[themeName].Colors
+        Theme._notifyListeners()
         return true
     end
     return false

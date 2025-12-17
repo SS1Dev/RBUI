@@ -32,7 +32,8 @@ local UIFramework = loadstring(game:HttpGet("https://github.com/SS1Dev/RBUI/rele
 
 local Panel = UIFramework.CreatePanel({
     Title = "🎮 Game Panel",
-    Size = UDim2.new(0, 950, 0, 650),
+    Size = UDim2.new(0, 700, 0, 450),
+    Theme = "Dark", -- Set default theme: Dark, Light, Pink, Blue, Golden, DarkBlue, DarkPink, DarkGolden, LightPink, LightGolden, LightBlue
     OnClose = function()
         print("Panel closed!")
     end,
@@ -194,8 +195,8 @@ UIFramework.Dropdown.new({
         UIFramework.Notify({
             Type = "success",
             Title = "Theme Changed!",
-            Message = "Theme set to: " .. value .. "\n(Reload panel to see changes)",
-            Duration = 3
+            Message = "Theme set to: " .. value,
+            Duration = 2
         })
     end
 })
