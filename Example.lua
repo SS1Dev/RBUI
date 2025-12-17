@@ -54,8 +54,8 @@ local Panel = UIFramework.CreatePanel({
     OnMinimize = function(minimized)
         print("Panel minimized:", minimized)
     end,
-    OnResize = function(newSize)
-        print("Panel resized to:", newSize.X.Offset, "x", newSize.Y.Offset)
+    OnResize = function(width, height)
+        print("Panel resized to:", width, "x", height)
     end
 })
 
