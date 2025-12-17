@@ -42,7 +42,7 @@ function Container.new(config)
     
     self.Title = config.Title or "Panel"
     self.Size = config.Size or UDim2.new(0, 800, 0, 600)
-    self.Position = config.Position or UDim2.new(0.5, -400, 0.5, -300)
+    self.Position = config.Position or UDim2.new(0.5, 0, 0.5, 0) -- Center of screen
     self.Draggable = config.Draggable ~= false
     self.Closable = config.Closable ~= false
     self.Minimizable = config.Minimizable ~= false
