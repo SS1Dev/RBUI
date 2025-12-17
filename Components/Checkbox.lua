@@ -55,20 +55,50 @@ function Checkbox:_Build()
         Parent = self.Parent
     })
     
-    -- Content layout
-    Utilities.ApplyListLayout(self.Frame, {
+    -- Left side (icon + text) - similar to Toggle
+    self.LeftContainer = Utilities.Create("Frame", {
+        Name = "Left",
+        Size = UDim2.new(1, -Theme.Sizes.CheckboxSize - Theme.Spacing.MD, 1, 0),
+        BackgroundTransparency = 1,
+        Parent = self.Frame
+    })
+    
+    Utilities.ApplyListLayout(self.LeftContainer, {
         Direction = Enum.FillDirection.Horizontal,
         VerticalAlignment = Enum.VerticalAlignment.Center,
         Padding = Theme.Spacing.SM
     })
     
-    -- Checkbox box
+    -- Icon
+    if self.Icon then
+        self.IconLabel = Icons.CreateLabel(self.Icon, 16, Theme.Colors.TextSecondary)
+        self.IconLabel.LayoutOrder = 1
+        self.IconLabel.Parent = self.LeftContainer
+    end
+    
+    -- Text
+    self.TextLabel = Utilities.Create("TextLabel", {
+        Name = "Text",
+        Size = UDim2.new(1, self.Icon and -26 or 0, 1, 0),
+        BackgroundTransparency = 1,
+        Text = self.Text,
+        TextColor3 = Theme.Colors.TextPrimary,
+        TextSize = Theme.Typography.Body,
+        Font = Theme.Typography.FontFamily,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        TextTruncate = Enum.TextTruncate.AtEnd,
+        LayoutOrder = 2,
+        Parent = self.LeftContainer
+    })
+    
+    -- Checkbox box (positioned on the right, like Toggle)
     self.Box = Utilities.Create("Frame", {
         Name = "Box",
         Size = UDim2.new(0, Theme.Sizes.CheckboxSize, 0, Theme.Sizes.CheckboxSize),
+        Position = UDim2.new(1, 0, 0.5, 0),
+        AnchorPoint = Vector2.new(1, 0.5),
         BackgroundColor3 = self.Value and Theme.Colors.Primary or Theme.Colors.InputBackground,
         BorderSizePixel = 0,
-        LayoutOrder = 1,
         Parent = self.Frame
     })
     
@@ -86,28 +116,6 @@ function Checkbox:_Build()
     self.Checkmark.AnchorPoint = Vector2.new(0.5, 0.5)
     self.Checkmark.TextTransparency = self.Value and 0 or 1
     self.Checkmark.Parent = self.Box
-    
-    -- Icon
-    if self.Icon then
-        self.IconLabel = Icons.CreateLabel(self.Icon, 16, Theme.Colors.TextSecondary)
-        self.IconLabel.LayoutOrder = 2
-        self.IconLabel.Parent = self.Frame
-    end
-    
-    -- Text
-    self.TextLabel = Utilities.Create("TextLabel", {
-        Name = "Text",
-        Size = UDim2.new(1, -(Theme.Sizes.CheckboxSize + Theme.Spacing.SM + (self.Icon and 26 or 0)), 1, 0),
-        BackgroundTransparency = 1,
-        Text = self.Text,
-        TextColor3 = Theme.Colors.TextPrimary,
-        TextSize = Theme.Typography.Body,
-        Font = Theme.Typography.FontFamily,
-        TextXAlignment = Enum.TextXAlignment.Left,
-        TextTruncate = Enum.TextTruncate.AtEnd,
-        LayoutOrder = 3,
-        Parent = self.Frame
-    })
     
     -- Events
     self.Frame.Activated:Connect(function()

@@ -117,14 +117,15 @@ local function createStatCard(name, value, icon, color)
         AutoLayout = false
     })
     
-    UIFramework.Utilities.Create("ImageLabel", {
+    UIFramework.Utilities.Create("TextLabel", {
         Name = "Icon",
         Size = UDim2.new(0, 32, 0, 32),
         Position = UDim2.new(0, 12, 0, 12),
         BackgroundTransparency = 1,
-        Image = UIFramework.Icons.Get(icon),
-        ImageColor3 = color,
-        ScaleType = Enum.ScaleType.Fit,
+        Text = UIFramework.Icons.Get(icon),
+        TextColor3 = color,
+        TextSize = 24,
+        Font = Enum.Font.GothamBold,
         Parent = card
     })
     
@@ -332,15 +333,17 @@ local formsTab = Panel:AddTab({
 })
 
 UIFramework.CreateSection({
-    Text = "Input Components",
+    Text = "Input with Label",
     Icon = "edit",
     Parent = formsTab
 })
 
--- Input examples
+-- Input with Label examples (Label on left, Input on right)
 UIFramework.Input.new({
-    Placeholder = "Enter your username...",
-    Icon = "user",
+    Label = "Username",
+    LabelIcon = "user",
+    Placeholder = "Enter username...",
+    InputWidth = UDim.new(0.55, 0),
     Parent = formsTab,
     OnChange = function(text)
         print("Username:", text)
@@ -355,8 +358,10 @@ UIFramework.Input.new({
 })
 
 UIFramework.Input.new({
-    Placeholder = "Enter your email...",
-    Icon = "envelope",
+    Label = "Email",
+    LabelIcon = "envelope",
+    Placeholder = "Enter email...",
+    InputWidth = UDim.new(0.55, 0),
     Parent = formsTab,
     OnChange = function(text)
         print("Email:", text)
@@ -364,12 +369,23 @@ UIFramework.Input.new({
 })
 
 UIFramework.Input.new({
+    Label = "Password",
+    LabelIcon = "lock",
     Placeholder = "Enter password...",
-    Icon = "lock",
     Password = true,
+    InputWidth = UDim.new(0.55, 0),
     Parent = formsTab
 })
 
+UIFramework.CreateDivider({ Parent = formsTab })
+
+UIFramework.CreateSection({
+    Text = "Input without Label",
+    Icon = "keyboard",
+    Parent = formsTab
+})
+
+-- Input without Label (full width)
 UIFramework.Input.new({
     Placeholder = "Search players...",
     Icon = "search",
@@ -377,6 +393,12 @@ UIFramework.Input.new({
     OnChange = function(text)
         print("Searching:", text)
     end
+})
+
+UIFramework.Input.new({
+    Placeholder = "Type a message...",
+    Icon = "comments",
+    Parent = formsTab
 })
 
 UIFramework.CreateDivider({ Parent = formsTab })
