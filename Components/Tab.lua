@@ -187,16 +187,17 @@ function Tab:_BuildTab(tabConfig, index)
         Padding = Theme.Spacing.SM
     })
     
-    -- Icon (ImageLabel)
+    -- Icon
     local iconLabel
     if tabIcon then
-        iconLabel = Utilities.Create("ImageLabel", {
+        iconLabel = Utilities.Create("TextLabel", {
             Name = "Icon",
             Size = UDim2.new(0, 16, 0, 16),
             BackgroundTransparency = 1,
-            Image = Icons.Get(tabIcon),
-            ImageColor3 = Theme.Colors.TextSecondary,
-            ScaleType = Enum.ScaleType.Fit,
+            Text = Icons.Get(tabIcon),
+            TextColor3 = Theme.Colors.TextSecondary,
+            TextSize = 14,
+            Font = Enum.Font.GothamMedium,
             LayoutOrder = 1,
             Parent = contentContainer
         })
@@ -243,7 +244,7 @@ function Tab:_BuildTab(tabConfig, index)
     end
     Utilities.ApplyCorner(indicator, Theme.BorderRadius.Full)
     
-    -- Tab content
+    -- Tab content (auto scrollbar)
     local tabContent = Utilities.Create("ScrollingFrame", {
         Name = "Content_" .. tabId,
         Size = UDim2.new(1, 0, 1, 0),
@@ -251,8 +252,12 @@ function Tab:_BuildTab(tabConfig, index)
         BorderSizePixel = 0,
         ScrollBarThickness = 4,
         ScrollBarImageColor3 = Theme.Colors.Primary,
+        ScrollBarImageTransparency = 0.3,
+        VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar,
         CanvasSize = UDim2.new(0, 0, 0, 0),
         AutomaticCanvasSize = Enum.AutomaticSize.Y,
+        ScrollingDirection = Enum.ScrollingDirection.Y,
+        ElasticBehavior = Enum.ElasticBehavior.Always,
         Visible = false,
         Parent = self.ContentArea
     })
@@ -301,7 +306,7 @@ function Tab:SelectTab(tabId)
             BackgroundColor3 = Theme.Colors.TabInactive
         })
         if currentTab.Icon then
-            Utilities.Tween(currentTab.Icon, { ImageColor3 = Theme.Colors.TextSecondary })
+            Utilities.Tween(currentTab.Icon, { TextColor3 = Theme.Colors.TextSecondary })
         end
         Utilities.Tween(currentTab.Text, { TextColor3 = Theme.Colors.TextSecondary })
         Utilities.Tween(currentTab.Indicator, { BackgroundTransparency = 1 })
@@ -321,7 +326,7 @@ function Tab:SelectTab(tabId)
             BackgroundColor3 = Theme.Colors.TabActive
         })
         if newTab.Icon then
-            Utilities.Tween(newTab.Icon, { ImageColor3 = Theme.Colors.TextPrimary })
+            Utilities.Tween(newTab.Icon, { TextColor3 = Theme.Colors.TextPrimary })
         end
         Utilities.Tween(newTab.Text, { TextColor3 = Theme.Colors.TextPrimary })
         Utilities.Tween(newTab.Indicator, { BackgroundTransparency = 0 })
@@ -409,7 +414,7 @@ function Tab:ApplyTheme()
         
         if tabData.Icon then
             Utilities.Tween(tabData.Icon, {
-                ImageColor3 = isActive and Theme.Colors.TextPrimary or Theme.Colors.TextSecondary
+                TextColor3 = isActive and Theme.Colors.TextPrimary or Theme.Colors.TextSecondary
             }, 0.2)
         end
         

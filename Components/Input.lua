@@ -78,17 +78,18 @@ function Input:_Build()
     local iconOffset = self.Icon and (20 + Theme.Spacing.SM) or 0
     local clearOffset = self.ClearButton and (24 + Theme.Spacing.SM) or 0
     
-    -- Icon (ImageLabel)
+    -- Icon
     if self.Icon then
-        self.IconLabel = Utilities.Create("ImageLabel", {
+        self.IconLabel = Utilities.Create("TextLabel", {
             Name = "Icon",
             Size = UDim2.new(0, 18, 0, 18),
             Position = UDim2.new(0, contentPadding, 0.5, 0),
             AnchorPoint = Vector2.new(0, 0.5),
             BackgroundTransparency = 1,
-            Image = Icons.Get(self.Icon),
-            ImageColor3 = Theme.Colors.TextSecondary,
-            ScaleType = Enum.ScaleType.Fit,
+            Text = Icons.Get(self.Icon),
+            TextColor3 = Theme.Colors.TextSecondary,
+            TextSize = 16,
+            Font = Enum.Font.GothamMedium,
             Parent = self.Frame
         })
     end
@@ -113,21 +114,21 @@ function Input:_Build()
     
     -- Clear button
     if self.ClearButton then
-        self.ClearBtn = Utilities.Create("ImageButton", {
+        self.ClearBtn = Utilities.Create("TextButton", {
             Name = "ClearButton",
             Size = UDim2.new(0, 20, 0, 20),
             Position = UDim2.new(1, -contentPadding - 20, 0.5, 0),
             AnchorPoint = Vector2.new(0, 0.5),
             BackgroundColor3 = Theme.Colors.BackgroundTertiary,
             BorderSizePixel = 0,
-            Image = Icons.Get("x"),
-            ImageColor3 = Theme.Colors.TextSecondary,
-            ScaleType = Enum.ScaleType.Fit,
+            Text = Icons.Get("x"),
+            TextColor3 = Theme.Colors.TextSecondary,
+            TextSize = 12,
+            Font = Enum.Font.GothamBold,
             AutoButtonColor = false,
             Visible = #self.Text > 0,
             Parent = self.Frame
         })
-        Utilities.ApplyPadding(self.ClearBtn, 4)
         
         Utilities.ApplyCorner(self.ClearBtn, Theme.BorderRadius.SM)
         
@@ -168,7 +169,7 @@ function Input:_OnFocus()
     Utilities.Tween(self.Stroke, { Color = Theme.Colors.InputFocus })
     
     if self.IconLabel then
-        Utilities.Tween(self.IconLabel, { ImageColor3 = Theme.Colors.Primary })
+        Utilities.Tween(self.IconLabel, { TextColor3 = Theme.Colors.Primary })
     end
     
     if self.OnFocus then
@@ -180,7 +181,7 @@ function Input:_OnFocusLost(enterPressed)
     Utilities.Tween(self.Stroke, { Color = Theme.Colors.InputBorder })
     
     if self.IconLabel then
-        Utilities.Tween(self.IconLabel, { ImageColor3 = Theme.Colors.TextSecondary })
+        Utilities.Tween(self.IconLabel, { TextColor3 = Theme.Colors.TextSecondary })
     end
     
     if enterPressed and self.OnSubmit then
@@ -264,12 +265,12 @@ function Input:ApplyTheme()
             self.TextBox.PlaceholderColor3 = Theme.Colors.TextMuted
         end
         if self.IconLabel then
-            Utilities.Tween(self.IconLabel, { ImageColor3 = Theme.Colors.TextSecondary }, 0.2)
+            Utilities.Tween(self.IconLabel, { TextColor3 = Theme.Colors.TextSecondary }, 0.2)
         end
         if self.ClearBtn then
             Utilities.Tween(self.ClearBtn, { 
                 BackgroundColor3 = Theme.Colors.BackgroundTertiary,
-                ImageColor3 = Theme.Colors.TextSecondary
+                TextColor3 = Theme.Colors.TextSecondary
             }, 0.2)
         end
     end

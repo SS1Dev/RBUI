@@ -121,6 +121,13 @@ function UIFramework.CreatePanel(config)
         SidebarWidth = config.SidebarWidth,
         MinWidth = config.MinWidth,
         MinHeight = config.MinHeight,
+        
+        -- Transparency settings
+        Transparency = config.Transparency,
+        HeaderTransparency = config.HeaderTransparency,
+        SidebarTransparency = config.SidebarTransparency,
+        ContentTransparency = config.ContentTransparency,
+        
         Parent = config.Parent,
         OnClose = config.OnClose,
         OnMinimize = config.OnMinimize,
@@ -295,7 +302,6 @@ function UIFramework.Notify(config)
     
     UIFramework.Utilities.ApplyCorner(notif, UIFramework.Theme.BorderRadius.MD)
     UIFramework.Utilities.ApplyStroke(notif, { Color = color, Thickness = 1 })
-    UIFramework.Utilities.CreateShadow(notif, 4, 8)
     
     -- Accent bar
     UIFramework.Utilities.Create("Frame", {

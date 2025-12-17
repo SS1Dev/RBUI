@@ -52,6 +52,14 @@ function Container.new(config)
     self.MinWidth = config.MinWidth or Theme.Sizes.MinPanelWidth
     self.MinHeight = config.MinHeight or Theme.Sizes.MinPanelHeight
     self.Parent = config.Parent or Players.LocalPlayer:WaitForChild("PlayerGui")
+    
+    -- Transparency settings
+    self.Transparency = config.Transparency or 0 -- Main panel transparency (0-1)
+    self.HeaderTransparency = config.HeaderTransparency or 0
+    self.SidebarTransparency = config.SidebarTransparency or 0
+    self.ContentTransparency = config.ContentTransparency or 0
+    
+    -- Callbacks
     self.OnClose = config.OnClose
     self.OnMinimize = config.OnMinimize
     self.OnResize = config.OnResize
@@ -77,20 +85,20 @@ function Container:_Build()
         Parent = self.Parent
     })
     
-    -- Main Frame (Modern - No Border, Soft Shadow)
+    -- Main Frame (Modern - Supports Transparency)
     self.Frame = Utilities.Create("Frame", {
         Name = "MainFrame",
         Size = self.Size,
         Position = self.Position,
         AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundColor3 = Theme.Colors.Background,
+        BackgroundTransparency = self.Transparency,
         BorderSizePixel = 0,
         ClipsDescendants = true,
         Parent = self.ScreenGui
     })
     
     Utilities.ApplyCorner(self.Frame, Theme.BorderRadius.XXL)
-    Utilities.CreateShadow(self.Frame, 12, 32)
     
     -- Resize Handle (Bottom-Right Corner)
     if self.Resizable then
@@ -129,6 +137,7 @@ function Container:_BuildHeader()
         Name = "Header",
         Size = UDim2.new(1, 0, 0, Theme.Sizes.HeaderHeight),
         BackgroundColor3 = Theme.Colors.BackgroundSecondary,
+        BackgroundTransparency = self.HeaderTransparency,
         BorderSizePixel = 0,
         Parent = self.Frame
     })
@@ -155,16 +164,15 @@ function Container:_BuildHeader()
     })
     Utilities.ApplyCorner(logoContainer, Theme.BorderRadius.SM)
     
-    -- Logo Icon (ImageLabel)
-    Utilities.Create("ImageLabel", {
+    -- Logo Icon
+    Utilities.Create("TextLabel", {
         Name = "LogoIcon",
-        Size = UDim2.new(1, -8, 1, -8),
-        Position = UDim2.new(0.5, 0, 0.5, 0),
-        AnchorPoint = Vector2.new(0.5, 0.5),
+        Size = UDim2.new(1, 0, 1, 0),
         BackgroundTransparency = 1,
-        Image = Icons.Get("box"),
-        ImageColor3 = Theme.Colors.TextPrimary,
-        ScaleType = Enum.ScaleType.Fit,
+        Text = Icons.Get("box"),
+        TextColor3 = Theme.Colors.TextPrimary,
+        TextSize = 14,
+        Font = Enum.Font.GothamBold,
         Parent = logoContainer
     })
     
@@ -324,6 +332,7 @@ function Container:_BuildSidebar()
         Name = "Sidebar",
         Size = UDim2.new(0, self.SidebarWidth, 1, 0),
         BackgroundColor3 = Theme.Colors.BackgroundSecondary,
+        BackgroundTransparency = self.SidebarTransparency,
         BorderSizePixel = 0,
         Parent = self.BodyContainer
     })
@@ -339,7 +348,7 @@ function Container:_BuildSidebar()
         Parent = self.Sidebar
     })
     
-    -- Sidebar content
+    -- Sidebar content (auto scrollbar)
     self.SidebarContent = Utilities.Create("ScrollingFrame", {
         Name = "Content",
         Size = UDim2.new(1, -2, 1, 0),
@@ -347,8 +356,11 @@ function Container:_BuildSidebar()
         BorderSizePixel = 0,
         ScrollBarThickness = 4,
         ScrollBarImageColor3 = Theme.Colors.Primary,
+        ScrollBarImageTransparency = 0.5,
+        VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar,
         CanvasSize = UDim2.new(0, 0, 0, 0),
         AutomaticCanvasSize = Enum.AutomaticSize.Y,
+        ScrollingDirection = Enum.ScrollingDirection.Y,
         Parent = self.Sidebar
     })
     
@@ -370,7 +382,7 @@ function Container:_BuildContentArea()
         Parent = self.BodyContainer
     })
     
-    -- Content scroll frame
+    -- Content scroll frame (auto scrollbar)
     self.Content = Utilities.Create("ScrollingFrame", {
         Name = "Content",
         Size = UDim2.new(1, 0, 1, 0),
@@ -378,8 +390,12 @@ function Container:_BuildContentArea()
         BorderSizePixel = 0,
         ScrollBarThickness = 6,
         ScrollBarImageColor3 = Theme.Colors.Primary,
+        ScrollBarImageTransparency = 0.3,
+        VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar,
         CanvasSize = UDim2.new(0, 0, 0, 0),
         AutomaticCanvasSize = Enum.AutomaticSize.Y,
+        ScrollingDirection = Enum.ScrollingDirection.Y,
+        ElasticBehavior = Enum.ElasticBehavior.Always,
         Parent = self.ContentArea
     })
     
@@ -412,16 +428,17 @@ function Container:AddTab(config)
     
     Utilities.ApplyCorner(tabButton, Theme.BorderRadius.SM)
     
-    -- Tab Icon (ImageLabel)
-    local iconLabel = Utilities.Create("ImageLabel", {
+    -- Tab Icon
+    local iconLabel = Utilities.Create("TextLabel", {
         Name = "Icon",
         Size = UDim2.new(0, 16, 0, 16),
         Position = UDim2.new(0, Theme.Spacing.SM, 0.5, 0),
         AnchorPoint = Vector2.new(0, 0.5),
         BackgroundTransparency = 1,
-        Image = Icons.Get(tabIcon),
-        ImageColor3 = Theme.Colors.TextSecondary,
-        ScaleType = Enum.ScaleType.Fit,
+        Text = Icons.Get(tabIcon),
+        TextColor3 = Theme.Colors.TextSecondary,
+        TextSize = 14,
+        Font = Enum.Font.GothamMedium,
         Parent = tabButton
     })
     
@@ -512,7 +529,7 @@ function Container:SelectTab(tabId)
     if self.CurrentTab and self.Tabs[self.CurrentTab] then
         local currentTab = self.Tabs[self.CurrentTab]
         Utilities.Tween(currentTab.Button, { BackgroundTransparency = 1 })
-        Utilities.Tween(currentTab.Icon, { ImageColor3 = Theme.Colors.TextSecondary })
+        Utilities.Tween(currentTab.Icon, { TextColor3 = Theme.Colors.TextSecondary })
         Utilities.Tween(currentTab.Text, { TextColor3 = Theme.Colors.TextSecondary })
         Utilities.Tween(currentTab.Indicator, { BackgroundTransparency = 1 })
         currentTab.Content.Visible = false
@@ -527,7 +544,7 @@ function Container:SelectTab(tabId)
             BackgroundTransparency = 0,
             BackgroundColor3 = Theme.Colors.Primary
         })
-        Utilities.Tween(newTab.Icon, { ImageColor3 = Theme.Colors.TextPrimary })
+        Utilities.Tween(newTab.Icon, { TextColor3 = Theme.Colors.TextPrimary })
         Utilities.Tween(newTab.Text, { TextColor3 = Theme.Colors.TextPrimary })
         Utilities.Tween(newTab.Indicator, { BackgroundTransparency = 0 })
         newTab.Content.Visible = true
@@ -607,6 +624,35 @@ function Container:SetTitle(title)
     end
 end
 
+-- Set transparency for all panel elements
+function Container:SetTransparency(transparency)
+    self.Transparency = transparency
+    if self.Frame then
+        Utilities.Tween(self.Frame, { BackgroundTransparency = transparency }, 0.2)
+    end
+    if self.Header then
+        Utilities.Tween(self.Header, { BackgroundTransparency = transparency }, 0.2)
+    end
+    if self.Sidebar then
+        Utilities.Tween(self.Sidebar, { BackgroundTransparency = transparency }, 0.2)
+    end
+end
+
+-- Set individual transparency values
+function Container:SetHeaderTransparency(transparency)
+    self.HeaderTransparency = transparency
+    if self.Header then
+        Utilities.Tween(self.Header, { BackgroundTransparency = transparency }, 0.2)
+    end
+end
+
+function Container:SetSidebarTransparency(transparency)
+    self.SidebarTransparency = transparency
+    if self.Sidebar then
+        Utilities.Tween(self.Sidebar, { BackgroundTransparency = transparency }, 0.2)
+    end
+end
+
 -- Apply current theme colors to all container elements
 function Container:ApplyTheme()
     if not self.Frame then return end
@@ -628,7 +674,7 @@ function Container:ApplyTheme()
             Utilities.Tween(logoContainer, { BackgroundColor3 = Theme.Colors.Primary }, 0.2)
             local icon = logoContainer:FindFirstChild("LogoIcon")
             if icon then 
-                Utilities.Tween(icon, { ImageColor3 = Theme.Colors.TextPrimary }, 0.2)
+                Utilities.Tween(icon, { TextColor3 = Theme.Colors.TextPrimary }, 0.2)
             end
         end
         
@@ -681,7 +727,7 @@ function Container:ApplyTheme()
             local icon = tabData.Button:FindFirstChild("Icon")
             if icon then
                 Utilities.Tween(icon, {
-                    ImageColor3 = isActive and Theme.Colors.TextPrimary or Theme.Colors.TextSecondary
+                    TextColor3 = isActive and Theme.Colors.TextPrimary or Theme.Colors.TextSecondary
                 }, 0.2)
             end
             

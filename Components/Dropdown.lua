@@ -98,17 +98,18 @@ function Dropdown:_Build()
     -- Content container
     local contentPadding = Theme.Spacing.MD
     
-    -- Icon (ImageLabel)
+    -- Icon
     if self.Icon then
-        self.IconLabel = Utilities.Create("ImageLabel", {
+        self.IconLabel = Utilities.Create("TextLabel", {
             Name = "Icon",
             Size = UDim2.new(0, 18, 0, 18),
             Position = UDim2.new(0, contentPadding, 0.5, 0),
             AnchorPoint = Vector2.new(0, 0.5),
             BackgroundTransparency = 1,
-            Image = Icons.Get(self.Icon),
-            ImageColor3 = Theme.Colors.TextSecondary,
-            ScaleType = Enum.ScaleType.Fit,
+            Text = Icons.Get(self.Icon),
+            TextColor3 = Theme.Colors.TextSecondary,
+            TextSize = 16,
+            Font = Enum.Font.GothamMedium,
             Parent = self.MainButton
         })
     end
@@ -129,16 +130,17 @@ function Dropdown:_Build()
         Parent = self.MainButton
     })
     
-    -- Arrow icon (ImageLabel)
-    self.Arrow = Utilities.Create("ImageLabel", {
+    -- Arrow icon
+    self.Arrow = Utilities.Create("TextLabel", {
         Name = "Arrow",
         Size = UDim2.new(0, 16, 0, 16),
         Position = UDim2.new(1, -contentPadding - 16, 0.5, 0),
         AnchorPoint = Vector2.new(0, 0.5),
         BackgroundTransparency = 1,
-        Image = Icons.Get("chevron-down"),
-        ImageColor3 = Theme.Colors.TextSecondary,
-        ScaleType = Enum.ScaleType.Fit,
+        Text = Icons.Get("chevron-down"),
+        TextColor3 = Theme.Colors.TextSecondary,
+        TextSize = 14,
+        Font = Enum.Font.GothamMedium,
         Parent = self.MainButton
     })
     
@@ -160,7 +162,6 @@ function Dropdown:_Build()
         Color = Theme.Colors.SurfaceBorder,
         Thickness = 1
     })
-    Utilities.CreateShadow(self.Panel, 4, 16)
     
     -- Search box (if searchable)
     local searchHeight = 0
@@ -206,7 +207,7 @@ function Dropdown:_Build()
         end)
     end
     
-    -- Options scroll frame
+    -- Options scroll frame (auto scrollbar)
     self.OptionsContainer = Utilities.Create("ScrollingFrame", {
         Name = "Options",
         Size = UDim2.new(1, 0, 1, -searchHeight),
@@ -215,8 +216,11 @@ function Dropdown:_Build()
         BorderSizePixel = 0,
         ScrollBarThickness = 4,
         ScrollBarImageColor3 = Theme.Colors.Primary,
+        ScrollBarImageTransparency = 0.3,
+        VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar,
         CanvasSize = UDim2.new(0, 0, 0, 0),
         AutomaticCanvasSize = Enum.AutomaticSize.Y,
+        ScrollingDirection = Enum.ScrollingDirection.Y,
         ZIndex = 101,
         Parent = self.Panel
     })
@@ -607,16 +611,16 @@ function Dropdown:SetDisabled(disabled)
         self:Close()
         self.MainButton.BackgroundColor3 = Theme.Colors.BackgroundTertiary
         self.SelectedText.TextColor3 = Theme.Colors.TextDisabled
-        self.Arrow.ImageColor3 = Theme.Colors.TextDisabled
+        self.Arrow.TextColor3 = Theme.Colors.TextDisabled
         if self.IconLabel then
-            self.IconLabel.ImageColor3 = Theme.Colors.TextDisabled
+            self.IconLabel.TextColor3 = Theme.Colors.TextDisabled
         end
     else
         self.MainButton.BackgroundColor3 = Theme.Colors.InputBackground
         self.SelectedText.TextColor3 = self:_HasValue() and Theme.Colors.TextPrimary or Theme.Colors.TextMuted
-        self.Arrow.ImageColor3 = Theme.Colors.TextSecondary
+        self.Arrow.TextColor3 = Theme.Colors.TextSecondary
         if self.IconLabel then
-            self.IconLabel.ImageColor3 = Theme.Colors.TextSecondary
+            self.IconLabel.TextColor3 = Theme.Colors.TextSecondary
         end
     end
 end
@@ -634,9 +638,9 @@ function Dropdown:ApplyTheme()
         Utilities.Tween(self.SelectedText, { 
             TextColor3 = self:_HasValue() and Theme.Colors.TextPrimary or Theme.Colors.TextMuted 
         }, 0.2)
-        Utilities.Tween(self.Arrow, { ImageColor3 = Theme.Colors.TextSecondary }, 0.2)
+        Utilities.Tween(self.Arrow, { TextColor3 = Theme.Colors.TextSecondary }, 0.2)
         if self.IconLabel then
-            Utilities.Tween(self.IconLabel, { ImageColor3 = Theme.Colors.TextSecondary }, 0.2)
+            Utilities.Tween(self.IconLabel, { TextColor3 = Theme.Colors.TextSecondary }, 0.2)
         end
         if self.Panel then
             Utilities.Tween(self.Panel, { BackgroundColor3 = Theme.Colors.DropdownBackground }, 0.2)

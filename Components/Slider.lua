@@ -95,15 +95,16 @@ function Slider:_Build()
         Padding = Theme.Spacing.SM
     })
     
-    -- Icon (ImageLabel)
+    -- Icon
     if self.Icon then
-        self.IconLabel = Utilities.Create("ImageLabel", {
+        self.IconLabel = Utilities.Create("TextLabel", {
             Name = "Icon",
             Size = UDim2.new(0, 16, 0, 16),
             BackgroundTransparency = 1,
-            Image = Icons.Get(self.Icon),
-            ImageColor3 = Theme.Colors.TextSecondary,
-            ScaleType = Enum.ScaleType.Fit,
+            Text = Icons.Get(self.Icon),
+            TextColor3 = Theme.Colors.TextSecondary,
+            TextSize = 14,
+            Font = Enum.Font.GothamMedium,
             LayoutOrder = 1,
             Parent = leftContainer
         })
@@ -178,7 +179,6 @@ function Slider:_Build()
     })
     
     Utilities.ApplyCorner(self.Knob, Theme.BorderRadius.Full)
-    Utilities.CreateShadow(self.Knob, 2, 4)
     
     -- Click area for track
     self.ClickArea = Utilities.Create("TextButton", {
@@ -356,7 +356,7 @@ function Slider:SetDisabled(disabled)
         self.Knob.BackgroundColor3 = Theme.Colors.TextMuted
         self.TextLabel.TextColor3 = Theme.Colors.TextDisabled
         if self.IconLabel then
-            self.IconLabel.ImageColor3 = Theme.Colors.TextDisabled
+            self.IconLabel.TextColor3 = Theme.Colors.TextDisabled
         end
         if self.ValueLabel then
             self.ValueLabel.TextColor3 = Theme.Colors.TextDisabled
@@ -367,7 +367,7 @@ function Slider:SetDisabled(disabled)
         self.Knob.BackgroundColor3 = Theme.Colors.SliderKnob
         self.TextLabel.TextColor3 = Theme.Colors.TextPrimary
         if self.IconLabel then
-            self.IconLabel.ImageColor3 = Theme.Colors.TextSecondary
+            self.IconLabel.TextColor3 = Theme.Colors.TextSecondary
         end
         if self.ValueLabel then
             self.ValueLabel.TextColor3 = Theme.Colors.Primary
@@ -388,7 +388,7 @@ function Slider:ApplyTheme()
         Utilities.Tween(self.Knob, { BackgroundColor3 = Theme.Colors.SliderKnob }, 0.2)
         Utilities.Tween(self.TextLabel, { TextColor3 = Theme.Colors.TextPrimary }, 0.2)
         if self.IconLabel then
-            Utilities.Tween(self.IconLabel, { ImageColor3 = Theme.Colors.TextSecondary }, 0.2)
+            Utilities.Tween(self.IconLabel, { TextColor3 = Theme.Colors.TextSecondary }, 0.2)
         end
         if self.ValueLabel then
             Utilities.Tween(self.ValueLabel, { TextColor3 = Theme.Colors.Primary }, 0.2)

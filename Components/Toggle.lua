@@ -67,15 +67,16 @@ function Toggle:_Build()
         Padding = Theme.Spacing.SM
     })
     
-    -- Icon (ImageLabel)
+    -- Icon
     if self.Icon then
-        self.IconLabel = Utilities.Create("ImageLabel", {
+        self.IconLabel = Utilities.Create("TextLabel", {
             Name = "Icon",
             Size = UDim2.new(0, 18, 0, 18),
             BackgroundTransparency = 1,
-            Image = Icons.Get(self.Icon),
-            ImageColor3 = Theme.Colors.TextSecondary,
-            ScaleType = Enum.ScaleType.Fit,
+            Text = Icons.Get(self.Icon),
+            TextColor3 = Theme.Colors.TextSecondary,
+            TextSize = 16,
+            Font = Enum.Font.GothamMedium,
             LayoutOrder = 1,
             Parent = self.LeftContainer
         })
@@ -199,14 +200,14 @@ function Toggle:SetDisabled(disabled)
         self.Knob.BackgroundColor3 = Theme.Colors.TextMuted
         self.TextLabel.TextColor3 = Theme.Colors.TextDisabled
         if self.IconLabel then
-            self.IconLabel.ImageColor3 = Theme.Colors.TextDisabled
+            self.IconLabel.TextColor3 = Theme.Colors.TextDisabled
         end
     else
         self.Switch.BackgroundColor3 = self.Value and Theme.Colors.ToggleOn or Theme.Colors.ToggleOff
         self.Knob.BackgroundColor3 = Theme.Colors.ToggleKnob
         self.TextLabel.TextColor3 = Theme.Colors.TextPrimary
         if self.IconLabel then
-            self.IconLabel.ImageColor3 = Theme.Colors.TextSecondary
+            self.IconLabel.TextColor3 = Theme.Colors.TextSecondary
         end
     end
 end
@@ -225,7 +226,7 @@ function Toggle:ApplyTheme()
         Utilities.Tween(self.Knob, { BackgroundColor3 = Theme.Colors.ToggleKnob }, 0.2)
         Utilities.Tween(self.TextLabel, { TextColor3 = Theme.Colors.TextPrimary }, 0.2)
         if self.IconLabel then
-            Utilities.Tween(self.IconLabel, { ImageColor3 = Theme.Colors.TextSecondary }, 0.2)
+            Utilities.Tween(self.IconLabel, { TextColor3 = Theme.Colors.TextSecondary }, 0.2)
         end
     end
 end
