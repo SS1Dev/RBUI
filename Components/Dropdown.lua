@@ -100,16 +100,15 @@ function Dropdown:_Build()
     
     -- Icon
     if self.Icon then
-        self.IconLabel = Utilities.Create("TextLabel", {
+        self.IconLabel = Utilities.Create("ImageLabel", {
             Name = "Icon",
             Size = UDim2.new(0, 18, 0, 18),
             Position = UDim2.new(0, contentPadding, 0.5, 0),
             AnchorPoint = Vector2.new(0, 0.5),
             BackgroundTransparency = 1,
-            Text = Icons.Get(self.Icon),
-            TextColor3 = Theme.Colors.TextSecondary,
-            TextSize = 16,
-            Font = Enum.Font.GothamMedium,
+            Image = Icons.Get(self.Icon),
+            ImageColor3 = Theme.Colors.TextSecondary,
+            ScaleType = Enum.ScaleType.Fit,
             Parent = self.MainButton
         })
     end
@@ -131,16 +130,15 @@ function Dropdown:_Build()
     })
     
     -- Arrow icon
-    self.Arrow = Utilities.Create("TextLabel", {
+    self.Arrow = Utilities.Create("ImageLabel", {
         Name = "Arrow",
         Size = UDim2.new(0, 16, 0, 16),
         Position = UDim2.new(1, -contentPadding - 16, 0.5, 0),
         AnchorPoint = Vector2.new(0, 0.5),
         BackgroundTransparency = 1,
-        Text = Icons.Get("chevron-down"),
-        TextColor3 = Theme.Colors.TextSecondary,
-        TextSize = 14,
-        Font = Enum.Font.GothamMedium,
+        Image = Icons.Get("chevron-down"),
+        ImageColor3 = Theme.Colors.TextSecondary,
+        ScaleType = Enum.ScaleType.Fit,
         Parent = self.MainButton
     })
     
@@ -356,15 +354,16 @@ function Dropdown:_BuildOptions()
                 Thickness = 1
             })
             
-            Utilities.Create("TextLabel", {
+            Utilities.Create("ImageLabel", {
                 Name = "Check",
-                Size = UDim2.new(1, 0, 1, 0),
+                Size = UDim2.new(0, 12, 0, 12),
+                Position = UDim2.new(0.5, 0, 0.5, 0),
+                AnchorPoint = Vector2.new(0.5, 0.5),
                 BackgroundTransparency = 1,
-                Text = Icons.Get("check"),
-                TextColor3 = Theme.Colors.TextPrimary,
-                TextSize = 10,
-                Font = Theme.Typography.FontFamily,
-                TextTransparency = self:_IsSelected(optionValue) and 0 or 1,
+                Image = Icons.Get("check"),
+                ImageColor3 = Theme.Colors.TextPrimary,
+                ImageTransparency = self:_IsSelected(optionValue) and 0 or 1,
+                ScaleType = Enum.ScaleType.Fit,
                 ZIndex = 104,
                 Parent = checkbox
             })
@@ -374,16 +373,15 @@ function Dropdown:_BuildOptions()
         
         -- Option icon
         if optionIcon then
-            Utilities.Create("TextLabel", {
+            Utilities.Create("ImageLabel", {
                 Name = "Icon",
                 Size = UDim2.new(0, 16, 0, 16),
                 Position = UDim2.new(0, leftOffset, 0.5, 0),
                 AnchorPoint = Vector2.new(0, 0.5),
                 BackgroundTransparency = 1,
-                Text = Icons.Get(optionIcon),
-                TextColor3 = Theme.Colors.TextSecondary,
-                TextSize = 14,
-                Font = Theme.Typography.FontFamily,
+                Image = Icons.Get(optionIcon),
+                ImageColor3 = Theme.Colors.TextSecondary,
+                ScaleType = Enum.ScaleType.Fit,
                 ZIndex = 103,
                 Parent = optBtn
             })
@@ -408,16 +406,15 @@ function Dropdown:_BuildOptions()
         
         -- Selected indicator (single selection)
         if not self.Multiple and self:_IsSelected(optionValue) then
-            Utilities.Create("TextLabel", {
+            Utilities.Create("ImageLabel", {
                 Name = "Selected",
                 Size = UDim2.new(0, 16, 0, 16),
                 Position = UDim2.new(1, -Theme.Spacing.SM - 16, 0.5, 0),
                 AnchorPoint = Vector2.new(0, 0.5),
                 BackgroundTransparency = 1,
-                Text = Icons.Get("check"),
-                TextColor3 = Theme.Colors.Primary,
-                TextSize = 14,
-                Font = Theme.Typography.FontFamily,
+                Image = Icons.Get("check"),
+                ImageColor3 = Theme.Colors.Primary,
+                ScaleType = Enum.ScaleType.Fit,
                 ZIndex = 103,
                 Parent = optBtn
             })

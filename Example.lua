@@ -117,15 +117,14 @@ local function createStatCard(name, value, icon, color)
         AutoLayout = false
     })
     
-    UIFramework.Utilities.Create("TextLabel", {
+    UIFramework.Utilities.Create("ImageLabel", {
         Name = "Icon",
         Size = UDim2.new(0, 32, 0, 32),
         Position = UDim2.new(0, 12, 0, 12),
         BackgroundTransparency = 1,
-        Text = UIFramework.Icons.Get(icon),
-        TextColor3 = color,
-        TextSize = 24,
-        Font = UIFramework.Theme.Typography.FontFamily,
+        Image = UIFramework.Icons.Get(icon),
+        ImageColor3 = color,
+        ScaleType = Enum.ScaleType.Fit,
         Parent = card
     })
     

@@ -80,16 +80,15 @@ function Input:_Build()
     
     -- Icon
     if self.Icon then
-        self.IconLabel = Utilities.Create("TextLabel", {
+        self.IconLabel = Utilities.Create("ImageLabel", {
             Name = "Icon",
             Size = UDim2.new(0, 18, 0, 18),
             Position = UDim2.new(0, contentPadding, 0.5, 0),
             AnchorPoint = Vector2.new(0, 0.5),
             BackgroundTransparency = 1,
-            Text = Icons.Get(self.Icon),
-            TextColor3 = Theme.Colors.TextSecondary,
-            TextSize = 16,
-            Font = Enum.Font.GothamMedium,
+            Image = Icons.Get(self.Icon),
+            ImageColor3 = Theme.Colors.TextSecondary,
+            ScaleType = Enum.ScaleType.Fit,
             Parent = self.Frame
         })
     end
@@ -121,13 +120,22 @@ function Input:_Build()
             AnchorPoint = Vector2.new(0, 0.5),
             BackgroundColor3 = Theme.Colors.BackgroundTertiary,
             BorderSizePixel = 0,
-            Text = Icons.Get("x"),
-            TextColor3 = Theme.Colors.TextSecondary,
-            TextSize = 12,
-            Font = Enum.Font.GothamBold,
+            Text = "",
             AutoButtonColor = false,
             Visible = #self.Text > 0,
             Parent = self.Frame
+        })
+        
+        Utilities.Create("ImageLabel", {
+            Name = "Icon",
+            Size = UDim2.new(0, 12, 0, 12),
+            Position = UDim2.new(0.5, 0, 0.5, 0),
+            AnchorPoint = Vector2.new(0.5, 0.5),
+            BackgroundTransparency = 1,
+            Image = Icons.Get("x"),
+            ImageColor3 = Theme.Colors.TextSecondary,
+            ScaleType = Enum.ScaleType.Fit,
+            Parent = self.ClearBtn
         })
         
         Utilities.ApplyCorner(self.ClearBtn, Theme.BorderRadius.SM)

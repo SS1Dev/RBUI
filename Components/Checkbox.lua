@@ -80,28 +80,28 @@ function Checkbox:_Build()
     })
     
     -- Checkmark
-    self.Checkmark = Utilities.Create("TextLabel", {
+    self.Checkmark = Utilities.Create("ImageLabel", {
         Name = "Checkmark",
-        Size = UDim2.new(1, 0, 1, 0),
+        Size = UDim2.new(0, 14, 0, 14),
+        Position = UDim2.new(0.5, 0, 0.5, 0),
+        AnchorPoint = Vector2.new(0.5, 0.5),
         BackgroundTransparency = 1,
-        Text = Icons.Get("check"),
-        TextColor3 = Theme.Colors.TextPrimary,
-        TextSize = 12,
-        Font = Enum.Font.GothamBold,
-        TextTransparency = self.Value and 0 or 1,
+        Image = Icons.Get("check"),
+        ImageColor3 = Theme.Colors.TextPrimary,
+        ImageTransparency = self.Value and 0 or 1,
+        ScaleType = Enum.ScaleType.Fit,
         Parent = self.Box
     })
     
     -- Icon
     if self.Icon then
-        self.IconLabel = Utilities.Create("TextLabel", {
+        self.IconLabel = Utilities.Create("ImageLabel", {
             Name = "Icon",
             Size = UDim2.new(0, 16, 0, 16),
             BackgroundTransparency = 1,
-            Text = Icons.Get(self.Icon),
-            TextColor3 = Theme.Colors.TextSecondary,
-            TextSize = 14,
-            Font = Enum.Font.GothamMedium,
+            Image = Icons.Get(self.Icon),
+            ImageColor3 = Theme.Colors.TextSecondary,
+            ScaleType = Enum.ScaleType.Fit,
             LayoutOrder = 2,
             Parent = self.Frame
         })
@@ -163,7 +163,7 @@ function Checkbox:SetValue(value)
     if value then
         Utilities.Tween(self.Box, { BackgroundColor3 = Theme.Colors.Primary })
         Utilities.Tween(self.BoxStroke, { Color = Theme.Colors.Primary })
-        Utilities.Tween(self.Checkmark, { TextTransparency = 0 })
+        Utilities.Tween(self.Checkmark, { ImageTransparency = 0 })
         Utilities.SpringTween(self.Box, { Size = UDim2.new(0, Theme.Sizes.CheckboxSize + 2, 0, Theme.Sizes.CheckboxSize + 2) }, 0.15)
         task.delay(0.15, function()
             if self.Box then
@@ -173,7 +173,7 @@ function Checkbox:SetValue(value)
     else
         Utilities.Tween(self.Box, { BackgroundColor3 = Theme.Colors.InputBackground })
         Utilities.Tween(self.BoxStroke, { Color = Theme.Colors.InputBorder })
-        Utilities.Tween(self.Checkmark, { TextTransparency = 1 })
+        Utilities.Tween(self.Checkmark, { ImageTransparency = 1 })
     end
     
     if self.OnChange then
