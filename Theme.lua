@@ -709,48 +709,48 @@ Theme.CurrentTheme = "Dark"
 Theme.Colors = Theme.Presets.Dark.Colors
 
 -- ═══════════════════════════════════════════════════════════════
--- TYPOGRAPHY (Gamified Style)
+-- TYPOGRAPHY (Compact Style)
 -- ═══════════════════════════════════════════════════════════════
 
 Theme.Typography = {
-    FontFamily = Enum.Font.GothamBold,
-    FontFamilyBold = Enum.Font.GothamBlack,
-    FontFamilyLight = Enum.Font.GothamMedium,
+    FontFamily = Enum.Font.GothamMedium,
+    FontFamilyBold = Enum.Font.GothamBold,
+    FontFamilyLight = Enum.Font.Gotham,
     
-    -- Font Sizes
-    Title = 26,
-    Subtitle = 18,
-    Body = 14,
-    Small = 12,
+    -- Font Sizes (Compact)
+    Title = 18,
+    Subtitle = 14,
+    Body = 12,
+    Small = 11,
     Tiny = 10,
     
-    LineHeight = 1.5,
+    LineHeight = 1.4,
 }
 
 -- ═══════════════════════════════════════════════════════════════
--- SPACING
+-- SPACING (Compact)
 -- ═══════════════════════════════════════════════════════════════
 
 Theme.Spacing = {
     None = 0,
-    XS = 4,
-    SM = 8,
-    MD = 12,
-    LG = 16,
-    XL = 24,
-    XXL = 32,
+    XS = 2,
+    SM = 4,
+    MD = 8,
+    LG = 12,
+    XL = 16,
+    XXL = 24,
 }
 
 -- ═══════════════════════════════════════════════════════════════
--- BORDER RADIUS (More rounded for Gamified look)
+-- BORDER RADIUS (Compact)
 -- ═══════════════════════════════════════════════════════════════
 
 Theme.BorderRadius = {
     None = UDim.new(0, 0),
-    SM = UDim.new(0, 6),
-    MD = UDim.new(0, 10),
-    LG = UDim.new(0, 14),
-    XL = UDim.new(0, 18),
+    SM = UDim.new(0, 4),
+    MD = UDim.new(0, 6),
+    LG = UDim.new(0, 8),
+    XL = UDim.new(0, 12),
     Full = UDim.new(0, 9999),
 }
 
@@ -759,20 +759,23 @@ Theme.BorderRadius = {
 -- ═══════════════════════════════════════════════════════════════
 
 Theme.Sizes = {
-    InputHeight = 42,
-    ButtonHeight = 42,
-    ToggleHeight = 26,
-    ToggleWidth = 52,
-    CheckboxSize = 22,
-    SliderHeight = 8,
-    SliderKnobSize = 20,
+    -- Component Heights (Compact)
+    InputHeight = 28,
+    ButtonHeight = 28,
+    ToggleHeight = 18,
+    ToggleWidth = 36,
+    CheckboxSize = 16,
+    SliderHeight = 4,
+    SliderKnobSize = 14,
     
-    SidebarWidth = 260,
-    HeaderHeight = 65,
+    -- Layout (Compact)
+    SidebarWidth = 180,
+    HeaderHeight = 40,
     
-    IconSmall = 14,
-    IconMedium = 18,
-    IconLarge = 22,
+    -- Icons (Compact)
+    IconSmall = 12,
+    IconMedium = 14,
+    IconLarge = 16,
 }
 
 -- ═══════════════════════════════════════════════════════════════

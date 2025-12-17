@@ -140,13 +140,13 @@ function Container:_BuildHeader()
     -- Logo/Icon container
     local logoContainer = Utilities.Create("Frame", {
         Name = "LogoContainer",
-        Size = UDim2.new(0, 40, 0, 40),
-        Position = UDim2.new(0, Theme.Spacing.LG, 0.5, 0),
+        Size = UDim2.new(0, 28, 0, 28),
+        Position = UDim2.new(0, Theme.Spacing.MD, 0.5, 0),
         AnchorPoint = Vector2.new(0, 0.5),
         BackgroundColor3 = Theme.Colors.Primary,
         Parent = self.Header
     })
-    Utilities.ApplyCorner(logoContainer, Theme.BorderRadius.MD)
+    Utilities.ApplyCorner(logoContainer, Theme.BorderRadius.SM)
     
     -- Logo Icon
     Utilities.Create("TextLabel", {
@@ -155,7 +155,7 @@ function Container:_BuildHeader()
         BackgroundTransparency = 1,
         Text = Icons.Get("cubes"),
         TextColor3 = Theme.Colors.TextPrimary,
-        TextSize = 18,
+        TextSize = 14,
         Font = Theme.Typography.FontFamily,
         Parent = logoContainer
     })
@@ -164,7 +164,7 @@ function Container:_BuildHeader()
     self.TitleLabel = Utilities.Create("TextLabel", {
         Name = "Title",
         Size = UDim2.new(0, 200, 1, 0),
-        Position = UDim2.new(0, Theme.Spacing.LG + 50, 0, 0),
+        Position = UDim2.new(0, Theme.Spacing.MD + 36, 0, 0),
         BackgroundTransparency = 1,
         Text = self.Title,
         TextColor3 = Theme.Colors.TextPrimary,
@@ -177,8 +177,8 @@ function Container:_BuildHeader()
     -- Window Controls Container
     local controlsContainer = Utilities.Create("Frame", {
         Name = "Controls",
-        Size = UDim2.new(0, 80, 0, 36),
-        Position = UDim2.new(1, -Theme.Spacing.LG, 0.5, 0),
+        Size = UDim2.new(0, 60, 0, 24),
+        Position = UDim2.new(1, -Theme.Spacing.MD, 0.5, 0),
         AnchorPoint = Vector2.new(1, 0.5),
         BackgroundTransparency = 1,
         Parent = self.Header
@@ -211,17 +211,17 @@ end
 function Container:_CreateWindowControl(iconName, callback, hoverColor)
     local btn = Utilities.Create("TextButton", {
         Name = iconName .. "Button",
-        Size = UDim2.new(0, 32, 0, 32),
+        Size = UDim2.new(0, 24, 0, 24),
         BackgroundColor3 = Theme.Colors.BackgroundTertiary,
         BorderSizePixel = 0,
         Text = Icons.Get(iconName),
         TextColor3 = Theme.Colors.TextSecondary,
-        TextSize = 14,
+        TextSize = 12,
         Font = Theme.Typography.FontFamily,
         AutoButtonColor = false
     })
     
-    Utilities.ApplyCorner(btn, Theme.BorderRadius.MD)
+    Utilities.ApplyCorner(btn, Theme.BorderRadius.SM)
     
     btn.MouseEnter:Connect(function()
         Utilities.Tween(btn, {
@@ -306,9 +306,9 @@ function Container:_BuildContentArea()
         Parent = self.ContentArea
     })
     
-    Utilities.ApplyPadding(self.Content, Theme.Spacing.XL)
+    Utilities.ApplyPadding(self.Content, Theme.Spacing.LG)
     Utilities.ApplyListLayout(self.Content, {
-        Padding = Theme.Spacing.MD
+        Padding = Theme.Spacing.SM
     })
 end
 
@@ -321,10 +321,10 @@ function Container:AddTab(config)
     local tabIcon = config.Icon or "folder"
     local callback = config.Callback
     
-    -- Tab Button
+    -- Tab Button (Compact)
     local tabButton = Utilities.Create("TextButton", {
         Name = "Tab_" .. tabId,
-        Size = UDim2.new(1, 0, 0, 44),
+        Size = UDim2.new(1, 0, 0, 28),
         BackgroundColor3 = Theme.Colors.BackgroundSecondary,
         BackgroundTransparency = 1,
         BorderSizePixel = 0,
@@ -333,18 +333,18 @@ function Container:AddTab(config)
         Parent = self.SidebarContent
     })
     
-    Utilities.ApplyCorner(tabButton, Theme.BorderRadius.MD)
+    Utilities.ApplyCorner(tabButton, Theme.BorderRadius.SM)
     
     -- Tab Icon
     local iconLabel = Utilities.Create("TextLabel", {
         Name = "Icon",
-        Size = UDim2.new(0, 20, 0, 20),
-        Position = UDim2.new(0, Theme.Spacing.MD, 0.5, 0),
+        Size = UDim2.new(0, 16, 0, 16),
+        Position = UDim2.new(0, Theme.Spacing.SM, 0.5, 0),
         AnchorPoint = Vector2.new(0, 0.5),
         BackgroundTransparency = 1,
         Text = Icons.Get(tabIcon),
         TextColor3 = Theme.Colors.TextSecondary,
-        TextSize = 16,
+        TextSize = 12,
         Font = Theme.Typography.FontFamily,
         Parent = tabButton
     })
@@ -352,12 +352,12 @@ function Container:AddTab(config)
     -- Tab Text
     local textLabel = Utilities.Create("TextLabel", {
         Name = "Text",
-        Size = UDim2.new(1, -60, 1, 0),
-        Position = UDim2.new(0, Theme.Spacing.MD + 30, 0, 0),
+        Size = UDim2.new(1, -40, 1, 0),
+        Position = UDim2.new(0, Theme.Spacing.SM + 22, 0, 0),
         BackgroundTransparency = 1,
         Text = tabName,
         TextColor3 = Theme.Colors.TextSecondary,
-        TextSize = Theme.Typography.Body,
+        TextSize = Theme.Typography.Small,
         Font = Theme.Typography.FontFamily,
         TextXAlignment = Enum.TextXAlignment.Left,
         TextTruncate = Enum.TextTruncate.AtEnd,
@@ -367,7 +367,7 @@ function Container:AddTab(config)
     -- Active indicator
     local indicator = Utilities.Create("Frame", {
         Name = "Indicator",
-        Size = UDim2.new(0, 3, 0, 24),
+        Size = UDim2.new(0, 2, 0, 16),
         Position = UDim2.new(0, 0, 0.5, 0),
         AnchorPoint = Vector2.new(0, 0.5),
         BackgroundColor3 = Theme.Colors.Primary,
