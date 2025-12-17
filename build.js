@@ -74,8 +74,8 @@ function readAndCleanModule(modulePath, moduleName) {
     content = content.replace(/local\s+Utilities\s*=\s*require\([^)]+\)\s*/g, '');
     content = content.replace(/local\s+Icons\s*=\s*require\([^)]+\)\s*/g, '');
     
-    // Remove the return statement at the end
-    content = content.replace(/\n\s*return\s+\w+\s*$/m, '');
+    // Remove the final return statement at the end of file (last line only)
+    content = content.replace(/\nreturn\s+\w+\s*$/, '');
     
     // Remove GetFramework function if present
     content = content.replace(/local\s+function\s+GetFramework\(\)\s*\n\s*return\s+script\.Parent\.Parent\s*\n\s*end\s*/g, '');

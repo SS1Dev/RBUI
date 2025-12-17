@@ -20,7 +20,7 @@ local player = Players.LocalPlayer
 repeat task.wait() until player:IsDescendantOf(Players)
 
 -- Load UIFramework from built standalone file (for executors)
-local UIFramework = loadstring(game:HttpGet("YOUR_URL_HERE"))()
+local UIFramework = loadstring(game:HttpGet("https://github.com/SS1Dev/RBUI/releases/download/v1.0.0/main.lua"))()
 
 -- Alternative: Load from ReplicatedStorage (for Roblox Studio)
 -- local ReplicatedStorage = game:GetService("ReplicatedStorage")
