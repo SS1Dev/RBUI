@@ -478,9 +478,7 @@ function Container:_BuildContentArea()
     })
     
     Utilities.ApplyPadding(self.Content, Theme.Spacing.LG)
-    Utilities.ApplyListLayout(self.Content, {
-        Padding = Theme.Spacing.SM
-    })
+    -- Note: No UIListLayout here - tabs are shown one at a time, not stacked
 end
 
 -- Add a tab to sidebar
@@ -548,17 +546,24 @@ function Container:AddTab(config)
     })
     Utilities.ApplyCorner(indicator, Theme.BorderRadius.Full)
     
-    -- Content container for this tab
+    -- Content container for this tab (auto-size for scrolling)
     local tabContent = Utilities.Create("Frame", {
         Name = "TabContent_" .. tabId,
-        Size = UDim2.new(1, 0, 1, 0),
+        Size = UDim2.new(1, 0, 0, 0), -- Width 100%, Height auto
+        AutomaticSize = Enum.AutomaticSize.Y, -- Auto height based on content
         BackgroundTransparency = 1,
         Visible = false,
         Parent = self.Content
     })
     
-    Utilities.ApplyListLayout(tabContent, {
-        Padding = Theme.Spacing.MD
+    -- List layout for tab content - items stack vertically
+    local listLayout = Utilities.Create("UIListLayout", {
+        Padding = UDim.new(0, Theme.Spacing.MD),
+        FillDirection = Enum.FillDirection.Vertical,
+        HorizontalAlignment = Enum.HorizontalAlignment.Left,
+        VerticalAlignment = Enum.VerticalAlignment.Top,
+        SortOrder = Enum.SortOrder.LayoutOrder,
+        Parent = tabContent
     })
     
     -- Store tab data
@@ -626,6 +631,9 @@ function Container:SelectTab(tabId)
         Utilities.Tween(newTab.Text, { TextColor3 = Theme.Colors.TextPrimary })
         Utilities.Tween(newTab.Indicator, { BackgroundTransparency = 0 })
         newTab.Content.Visible = true
+        
+        -- Reset scroll position when switching tabs
+        self.Content.CanvasPosition = Vector2.new(0, 0)
     end
 end
 
