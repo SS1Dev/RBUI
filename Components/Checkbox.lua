@@ -39,6 +39,7 @@ function Checkbox.new(config)
     self.OnChange = config.OnChange
     
     self:_Build()
+    self:_RegisterThemeListener()
     
     return self
 end
@@ -216,6 +217,30 @@ end
 -- Get frame
 function Checkbox:GetFrame()
     return self.Frame
+end
+
+-- Apply theme
+function Checkbox:ApplyTheme()
+    if not self.Disabled then
+        Utilities.Tween(self.Box, { 
+            BackgroundColor3 = self.Value and Theme.Colors.Primary or Theme.Colors.InputBackground 
+        }, 0.2)
+        Utilities.Tween(self.BoxStroke, { 
+            Color = self.Value and Theme.Colors.Primary or Theme.Colors.InputBorder 
+        }, 0.2)
+        Utilities.Tween(self.Checkmark, { TextColor3 = Theme.Colors.TextPrimary }, 0.2)
+        Utilities.Tween(self.TextLabel, { TextColor3 = Theme.Colors.TextPrimary }, 0.2)
+        if self.IconLabel then
+            Utilities.Tween(self.IconLabel, { TextColor3 = Theme.Colors.TextSecondary }, 0.2)
+        end
+    end
+end
+
+-- Register for theme updates
+function Checkbox:_RegisterThemeListener()
+    self._themeListenerId = Theme.OnThemeChange(function()
+        self:ApplyTheme()
+    end)
 end
 
 -- Destroy

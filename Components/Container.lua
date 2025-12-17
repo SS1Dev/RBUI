@@ -537,61 +537,99 @@ function Container:ApplyTheme()
     if not self.Frame then return end
     
     -- Main frame
-    self.Frame.BackgroundColor3 = Theme.Colors.Background
+    Utilities.Tween(self.Frame, { BackgroundColor3 = Theme.Colors.Background }, 0.2)
     
     -- Header
     if self.Header then
-        self.Header.BackgroundColor3 = Theme.Colors.BackgroundSecondary
+        Utilities.Tween(self.Header, { BackgroundColor3 = Theme.Colors.BackgroundSecondary }, 0.2)
+        
         local border = self.Header:FindFirstChild("Border")
-        if border then border.BackgroundColor3 = Theme.Colors.SurfaceBorder end
+        if border then 
+            Utilities.Tween(border, { BackgroundColor3 = Theme.Colors.SurfaceBorder }, 0.2)
+        end
         
         local logoContainer = self.Header:FindFirstChild("LogoContainer")
         if logoContainer then
-            logoContainer.BackgroundColor3 = Theme.Colors.Primary
+            Utilities.Tween(logoContainer, { BackgroundColor3 = Theme.Colors.Primary }, 0.2)
             local icon = logoContainer:FindFirstChild("LogoIcon")
-            if icon then icon.TextColor3 = Theme.Colors.TextPrimary end
+            if icon then 
+                Utilities.Tween(icon, { TextColor3 = Theme.Colors.TextPrimary }, 0.2)
+            end
         end
         
         if self.TitleLabel then
-            self.TitleLabel.TextColor3 = Theme.Colors.TextPrimary
+            Utilities.Tween(self.TitleLabel, { TextColor3 = Theme.Colors.TextPrimary }, 0.2)
+        end
+        
+        -- Window controls
+        local controls = self.Header:FindFirstChild("Controls")
+        if controls then
+            for _, btn in ipairs(controls:GetChildren()) do
+                if btn:IsA("TextButton") then
+                    Utilities.Tween(btn, { 
+                        BackgroundColor3 = Theme.Colors.BackgroundTertiary,
+                        TextColor3 = Theme.Colors.TextSecondary
+                    }, 0.2)
+                end
+            end
         end
     end
     
     -- Sidebar
     if self.Sidebar then
-        self.Sidebar.BackgroundColor3 = Theme.Colors.BackgroundSecondary
+        Utilities.Tween(self.Sidebar, { BackgroundColor3 = Theme.Colors.BackgroundSecondary }, 0.2)
+        
         local border = self.Sidebar:FindFirstChild("Border")
-        if border then border.BackgroundColor3 = Theme.Colors.SurfaceBorder end
+        if border then 
+            Utilities.Tween(border, { BackgroundColor3 = Theme.Colors.SurfaceBorder }, 0.2)
+        end
+        
+        -- Sidebar title
+        if self.SidebarContent then
+            local title = self.Sidebar:FindFirstChild("SidebarTitle")
+            if title then
+                Utilities.Tween(title, { TextColor3 = Theme.Colors.TextMuted }, 0.2)
+            end
+        end
     end
     
     -- Update tabs
     for tabId, tabData in pairs(self.Tabs) do
         if tabData.Button then
             local isActive = tabId == self.CurrentTab
-            tabData.Button.BackgroundTransparency = isActive and 0 or 1
-            tabData.Button.BackgroundColor3 = Theme.Colors.Primary
+            
+            Utilities.Tween(tabData.Button, {
+                BackgroundTransparency = isActive and 0 or 1,
+                BackgroundColor3 = Theme.Colors.Primary
+            }, 0.2)
             
             local icon = tabData.Button:FindFirstChild("Icon")
             if icon then
-                icon.TextColor3 = isActive and Theme.Colors.TextPrimary or Theme.Colors.TextSecondary
+                Utilities.Tween(icon, {
+                    TextColor3 = isActive and Theme.Colors.TextPrimary or Theme.Colors.TextSecondary
+                }, 0.2)
             end
             
             local text = tabData.Button:FindFirstChild("Text")
             if text then
-                text.TextColor3 = isActive and Theme.Colors.TextPrimary or Theme.Colors.TextSecondary
+                Utilities.Tween(text, {
+                    TextColor3 = isActive and Theme.Colors.TextPrimary or Theme.Colors.TextSecondary
+                }, 0.2)
             end
             
             local indicator = tabData.Button:FindFirstChild("Indicator")
             if indicator then
-                indicator.BackgroundColor3 = Theme.Colors.Primary
-                indicator.BackgroundTransparency = isActive and 0 or 1
+                Utilities.Tween(indicator, {
+                    BackgroundColor3 = Theme.Colors.Primary,
+                    BackgroundTransparency = isActive and 0 or 1
+                }, 0.2)
             end
         end
     end
     
     -- Content area
     if self.ContentArea then
-        self.ContentArea.BackgroundColor3 = Theme.Colors.Background
+        Utilities.Tween(self.ContentArea, { BackgroundColor3 = Theme.Colors.Background }, 0.2)
     end
     
     if self.Content then

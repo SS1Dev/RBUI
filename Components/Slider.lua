@@ -59,6 +59,7 @@ function Slider.new(config)
     self.IsDragging = false
     
     self:_Build()
+    self:_RegisterThemeListener()
     
     return self
 end
@@ -378,6 +379,29 @@ end
 -- Get frame
 function Slider:GetFrame()
     return self.Frame
+end
+
+-- Apply theme
+function Slider:ApplyTheme()
+    if not self.Disabled then
+        Utilities.Tween(self.Track, { BackgroundColor3 = Theme.Colors.SliderTrack }, 0.2)
+        Utilities.Tween(self.Fill, { BackgroundColor3 = Theme.Colors.SliderFill }, 0.2)
+        Utilities.Tween(self.Knob, { BackgroundColor3 = Theme.Colors.SliderKnob }, 0.2)
+        Utilities.Tween(self.TextLabel, { TextColor3 = Theme.Colors.TextPrimary }, 0.2)
+        if self.IconLabel then
+            Utilities.Tween(self.IconLabel, { TextColor3 = Theme.Colors.TextSecondary }, 0.2)
+        end
+        if self.ValueLabel then
+            Utilities.Tween(self.ValueLabel, { TextColor3 = Theme.Colors.Primary }, 0.2)
+        end
+    end
+end
+
+-- Register for theme updates
+function Slider:_RegisterThemeListener()
+    self._themeListenerId = Theme.OnThemeChange(function()
+        self:ApplyTheme()
+    end)
 end
 
 -- Destroy

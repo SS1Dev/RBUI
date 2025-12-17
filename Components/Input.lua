@@ -51,6 +51,7 @@ function Input.new(config)
     self.OnSubmit = config.OnSubmit
     
     self:_Build()
+    self:_RegisterThemeListener()
     
     return self
 end
@@ -251,6 +252,34 @@ end
 -- Get frame
 function Input:GetFrame()
     return self.Frame
+end
+
+-- Apply theme
+function Input:ApplyTheme()
+    if not self.Disabled then
+        Utilities.Tween(self.Frame, { BackgroundColor3 = Theme.Colors.InputBackground }, 0.2)
+        Utilities.Tween(self.Stroke, { Color = Theme.Colors.InputBorder }, 0.2)
+        if self.TextBox then
+            Utilities.Tween(self.TextBox, { TextColor3 = Theme.Colors.TextPrimary }, 0.2)
+            self.TextBox.PlaceholderColor3 = Theme.Colors.TextMuted
+        end
+        if self.IconLabel then
+            Utilities.Tween(self.IconLabel, { TextColor3 = Theme.Colors.TextSecondary }, 0.2)
+        end
+        if self.ClearBtn then
+            Utilities.Tween(self.ClearBtn, { 
+                BackgroundColor3 = Theme.Colors.BackgroundTertiary,
+                TextColor3 = Theme.Colors.TextSecondary
+            }, 0.2)
+        end
+    end
+end
+
+-- Register for theme updates
+function Input:_RegisterThemeListener()
+    self._themeListenerId = Theme.OnThemeChange(function()
+        self:ApplyTheme()
+    end)
 end
 
 -- Destroy

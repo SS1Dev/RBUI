@@ -42,6 +42,7 @@ function Tab.new(config)
     self.TabContents = {}
     
     self:_Build()
+    self:_RegisterThemeListener()
     
     return self
 end
@@ -384,6 +385,51 @@ end
 -- Get frame
 function Tab:GetFrame()
     return self.Frame
+end
+
+-- Apply theme
+function Tab:ApplyTheme()
+    -- Update tab bar background
+    if self.TabBar then
+        Utilities.Tween(self.TabBar, { BackgroundColor3 = Theme.Colors.BackgroundSecondary }, 0.2)
+    end
+    
+    -- Update content area
+    if self.ContentArea then
+        Utilities.Tween(self.ContentArea, { BackgroundColor3 = Theme.Colors.Background }, 0.2)
+    end
+    
+    -- Update all tabs
+    for tabId, tabData in pairs(self.TabButtons) do
+        local isActive = tabId == self.ActiveTab
+        
+        Utilities.Tween(tabData.Button, {
+            BackgroundTransparency = isActive and 0 or 1,
+            BackgroundColor3 = isActive and Theme.Colors.TabActive or Theme.Colors.TabInactive
+        }, 0.2)
+        
+        if tabData.Icon then
+            Utilities.Tween(tabData.Icon, {
+                TextColor3 = isActive and Theme.Colors.TextPrimary or Theme.Colors.TextSecondary
+            }, 0.2)
+        end
+        
+        Utilities.Tween(tabData.Text, {
+            TextColor3 = isActive and Theme.Colors.TextPrimary or Theme.Colors.TextSecondary
+        }, 0.2)
+        
+        Utilities.Tween(tabData.Indicator, {
+            BackgroundColor3 = Theme.Colors.TabActive,
+            BackgroundTransparency = isActive and 0 or 1
+        }, 0.2)
+    end
+end
+
+-- Register for theme updates
+function Tab:_RegisterThemeListener()
+    self._themeListenerId = Theme.OnThemeChange(function()
+        self:ApplyTheme()
+    end)
 end
 
 -- Destroy

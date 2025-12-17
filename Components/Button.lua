@@ -45,6 +45,7 @@ function Button.new(config)
     self.OnHover = config.OnHover
     
     self:_Build()
+    self:_RegisterThemeListener()
     
     return self
 end
@@ -330,6 +331,27 @@ end
 -- Get button instance
 function Button:GetButton()
     return self.Btn
+end
+
+-- Apply theme
+function Button:ApplyTheme()
+    local colors = self:_GetVariantColors()
+    if not self.Disabled then
+        Utilities.Tween(self.Btn, { BackgroundColor3 = colors.Background }, 0.2)
+        if self.TextLabel then
+            Utilities.Tween(self.TextLabel, { TextColor3 = colors.Text }, 0.2)
+        end
+        if self.IconLabel then
+            Utilities.Tween(self.IconLabel, { TextColor3 = colors.Text }, 0.2)
+        end
+    end
+end
+
+-- Register for theme updates
+function Button:_RegisterThemeListener()
+    self._themeListenerId = Theme.OnThemeChange(function()
+        self:ApplyTheme()
+    end)
 end
 
 -- Destroy

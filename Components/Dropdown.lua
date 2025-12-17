@@ -61,6 +61,7 @@ function Dropdown.new(config)
     self.FilteredOptions = {}
     
     self:_Build()
+    self:_RegisterThemeListener()
     
     return self
 end
@@ -624,6 +625,31 @@ end
 -- Get frame
 function Dropdown:GetFrame()
     return self.Frame
+end
+
+-- Apply theme
+function Dropdown:ApplyTheme()
+    if not self.Disabled then
+        Utilities.Tween(self.MainButton, { BackgroundColor3 = Theme.Colors.InputBackground }, 0.2)
+        Utilities.Tween(self.Stroke, { Color = Theme.Colors.InputBorder }, 0.2)
+        Utilities.Tween(self.SelectedText, { 
+            TextColor3 = self:_HasValue() and Theme.Colors.TextPrimary or Theme.Colors.TextMuted 
+        }, 0.2)
+        Utilities.Tween(self.Arrow, { TextColor3 = Theme.Colors.TextSecondary }, 0.2)
+        if self.IconLabel then
+            Utilities.Tween(self.IconLabel, { TextColor3 = Theme.Colors.TextSecondary }, 0.2)
+        end
+        if self.DropdownFrame then
+            Utilities.Tween(self.DropdownFrame, { BackgroundColor3 = Theme.Colors.DropdownBackground }, 0.2)
+        end
+    end
+end
+
+-- Register for theme updates
+function Dropdown:_RegisterThemeListener()
+    self._themeListenerId = Theme.OnThemeChange(function()
+        self:ApplyTheme()
+    end)
 end
 
 -- Destroy

@@ -45,6 +45,7 @@ function Label.new(config)
     self.OnClick = config.OnClick
     
     self:_Build()
+    self:_RegisterThemeListener()
     
     return self
 end
@@ -140,6 +141,23 @@ end
 -- Get frame
 function Label:GetFrame()
     return self.Frame
+end
+
+-- Apply theme
+function Label:ApplyTheme()
+    if self.TextLabel then
+        Utilities.Tween(self.TextLabel, { TextColor3 = self.TextColor or Theme.Colors.TextPrimary }, 0.2)
+    end
+    if self.IconLabel then
+        Utilities.Tween(self.IconLabel, { TextColor3 = self.TextColor or Theme.Colors.TextPrimary }, 0.2)
+    end
+end
+
+-- Register for theme updates
+function Label:_RegisterThemeListener()
+    self._themeListenerId = Theme.OnThemeChange(function()
+        self:ApplyTheme()
+    end)
 end
 
 -- Destroy
