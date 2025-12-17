@@ -58,7 +58,7 @@ function Dropdown.new(config)
     
     self.IsOpen = false
     self.OptionButtons = {}
-    self.FilteredOptions = {}
+    self.FilteredOptions = {} -- Will be initialized with all options in _Build
     
     self:_Build()
     self:_RegisterThemeListener()
@@ -230,7 +230,10 @@ function Dropdown:_Build()
         Padding = 2
     })
     
-    -- Build options
+    -- Initialize FilteredOptions with all options and build
+    for _, option in ipairs(self.Options) do
+        table.insert(self.FilteredOptions, option)
+    end
     self:_BuildOptions()
     
     -- Events
@@ -302,7 +305,30 @@ function Dropdown:_BuildOptions()
     end
     self.OptionButtons = {}
     
-    local options = #self.FilteredOptions > 0 and self.FilteredOptions or self.Options
+    -- Remove existing "No results" message
+    local noResultsMsg = self.OptionsContainer:FindFirstChild("NoResults")
+    if noResultsMsg then
+        noResultsMsg:Destroy()
+    end
+    
+    -- Use FilteredOptions (will be empty array if search found nothing)
+    local options = self.FilteredOptions
+    
+    -- Show "No results" message if search returned nothing
+    if #options == 0 and self.Searchable and self.SearchBox and self.SearchBox.Text ~= "" then
+        Utilities.Create("TextLabel", {
+            Name = "NoResults",
+            Size = UDim2.new(1, 0, 0, 36),
+            BackgroundTransparency = 1,
+            Text = "No results found",
+            TextColor3 = Theme.Colors.TextMuted,
+            TextSize = Theme.Typography.Body,
+            Font = Theme.Typography.FontFamily,
+            ZIndex = 102,
+            Parent = self.OptionsContainer
+        })
+        return
+    end
     
     for i, option in ipairs(options) do
         local optionText = type(option) == "table" and option.Text or tostring(option)
@@ -421,14 +447,19 @@ function Dropdown:_FilterOptions(searchText)
     self.FilteredOptions = {}
     
     if searchText == "" then
-        self.FilteredOptions = self.Options
+        -- Empty search = show all options
+        for _, option in ipairs(self.Options) do
+            table.insert(self.FilteredOptions, option)
+        end
     else
+        -- Filter by search text
         for _, option in ipairs(self.Options) do
             local optionText = type(option) == "table" and option.Text or tostring(option)
             if string.find(string.lower(optionText), searchText, 1, true) then
                 table.insert(self.FilteredOptions, option)
             end
         end
+        -- If no results, FilteredOptions stays empty = will show "No results" message
     end
     
     self:_BuildOptions()
@@ -546,7 +577,11 @@ function Dropdown:Open()
     
     if self.Searchable and self.SearchBox then
         self.SearchBox.Text = ""
-        self.FilteredOptions = self.Options
+        -- Reset FilteredOptions to all options
+        self.FilteredOptions = {}
+        for _, option in ipairs(self.Options) do
+            table.insert(self.FilteredOptions, option)
+        end
         self:_BuildOptions()
         task.delay(0.1, function()
             if self.SearchBox then
@@ -604,7 +639,11 @@ end
 -- Set options
 function Dropdown:SetOptions(options)
     self.Options = options
-    self.FilteredOptions = options
+    -- Reset FilteredOptions to all new options
+    self.FilteredOptions = {}
+    for _, option in ipairs(options) do
+        table.insert(self.FilteredOptions, option)
+    end
     self:_BuildOptions()
 end
 
