@@ -333,24 +333,16 @@ function Container:_BuildResizeHandle()
     end)
 end
 
--- Build sidebar (auto-fit width to menu content)
+-- Build sidebar (fixed width for proper tab button fill)
 function Container:_BuildSidebar()
     self.Sidebar = Utilities.Create("Frame", {
         Name = "Sidebar",
-        Size = UDim2.new(0, 0, 1, 0), -- Height 100%, Width auto
-        AutomaticSize = Enum.AutomaticSize.X, -- Auto width based on content
+        Size = UDim2.new(0, self.SidebarWidth, 1, 0), -- Fixed width
         BackgroundColor3 = Theme.Colors.BackgroundSecondary,
         BackgroundTransparency = self.SidebarTransparency,
         BorderSizePixel = 0,
         ClipsDescendants = true, -- Prevent content overflow
         Parent = self.BodyContainer
-    })
-    
-    -- Min/Max width constraint
-    Utilities.Create("UISizeConstraint", {
-        MinSize = Vector2.new(100, 0), -- Minimum 100px width
-        MaxSize = Vector2.new(200, math.huge), -- Maximum 200px width
-        Parent = self.Sidebar
     })
     
     -- Apply corner radius for bottom-left corner
@@ -370,8 +362,7 @@ function Container:_BuildSidebar()
     -- Sidebar content (auto scrollbar)
     self.SidebarContent = Utilities.Create("ScrollingFrame", {
         Name = "Content",
-        Size = UDim2.new(0, 0, 1, 0), -- Height 100%, Width auto
-        AutomaticSize = Enum.AutomaticSize.X, -- Auto width
+        Size = UDim2.new(1, -2, 1, 0), -- Full width minus border
         BackgroundTransparency = 1,
         BorderSizePixel = 0,
         ScrollBarThickness = 4,
@@ -391,35 +382,18 @@ function Container:_BuildSidebar()
     })
 end
 
--- Build content area (positioned next to auto-sized sidebar)
+-- Build content area
 function Container:_BuildContentArea()
-    -- Initial offset (will be updated when sidebar size changes)
-    local initialOffset = self.ShowSidebar and 100 or 0 -- Min sidebar width
+    local offsetX = self.ShowSidebar and self.SidebarWidth or 0
     
     self.ContentArea = Utilities.Create("Frame", {
         Name = "ContentArea",
-        Size = UDim2.new(1, -initialOffset, 1, 0),
-        Position = UDim2.new(0, initialOffset, 0, 0),
+        Size = UDim2.new(1, -offsetX, 1, 0),
+        Position = UDim2.new(0, offsetX, 0, 0),
         BackgroundTransparency = 1,
         ClipsDescendants = true, -- Prevent content overflow
         Parent = self.BodyContainer
     })
-    
-    -- Update content area position when sidebar size changes
-    if self.ShowSidebar and self.Sidebar then
-        self.Sidebar:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
-            local sidebarWidth = self.Sidebar.AbsoluteSize.X
-            self.ContentArea.Size = UDim2.new(1, -sidebarWidth, 1, 0)
-            self.ContentArea.Position = UDim2.new(0, sidebarWidth, 0, 0)
-        end)
-        
-        -- Initial update
-        task.defer(function()
-            local sidebarWidth = self.Sidebar.AbsoluteSize.X
-            self.ContentArea.Size = UDim2.new(1, -sidebarWidth, 1, 0)
-            self.ContentArea.Position = UDim2.new(0, sidebarWidth, 0, 0)
-        end)
-    end
     
     -- Apply corner radius for bottom-right corner (when no sidebar, also bottom-left)
     Utilities.ApplyCorner(self.ContentArea, Theme.BorderRadius.LG)
@@ -462,11 +436,10 @@ function Container:AddTab(config)
     local tabIcon = config.Icon or "folder"
     local callback = config.Callback
     
-    -- Tab Button (Auto width to fit content)
+    -- Tab Button (Full width of sidebar)
     local tabButton = Utilities.Create("TextButton", {
         Name = "Tab_" .. tabId,
-        Size = UDim2.new(0, 0, 0, 28), -- Height fixed, Width auto
-        AutomaticSize = Enum.AutomaticSize.X, -- Auto width based on content
+        Size = UDim2.new(1, 0, 0, 28), -- Full width, fixed height
         BackgroundColor3 = Theme.Colors.BackgroundSecondary,
         BackgroundTransparency = 1,
         BorderSizePixel = 0,
@@ -477,40 +450,25 @@ function Container:AddTab(config)
     
     Utilities.ApplyCorner(tabButton, Theme.BorderRadius.MD)
     
-    -- Horizontal layout for icon + text
-    Utilities.Create("UIListLayout", {
-        FillDirection = Enum.FillDirection.Horizontal,
-        VerticalAlignment = Enum.VerticalAlignment.Center,
-        Padding = UDim.new(0, 6),
-        SortOrder = Enum.SortOrder.LayoutOrder,
-        Parent = tabButton
-    })
-    
-    -- Padding inside tab button
-    Utilities.Create("UIPadding", {
-        PaddingLeft = UDim.new(0, Theme.Spacing.SM),
-        PaddingRight = UDim.new(0, Theme.Spacing.SM),
-        Parent = tabButton
-    })
-    
-    -- Tab Icon
+    -- Tab Icon (positioned left)
     local iconLabel = Icons.CreateLabel(tabIcon, 16, Theme.Colors.TextSecondary)
     iconLabel.Size = UDim2.new(0, 16, 0, 16)
-    iconLabel.LayoutOrder = 1
+    iconLabel.Position = UDim2.new(0, Theme.Spacing.SM, 0.5, 0)
+    iconLabel.AnchorPoint = Vector2.new(0, 0.5)
     iconLabel.Parent = tabButton
     
-    -- Tab Text (auto width)
+    -- Tab Text (positioned after icon)
     local textLabel = Utilities.Create("TextLabel", {
         Name = "Text",
-        Size = UDim2.new(0, 0, 0, 28),
-        AutomaticSize = Enum.AutomaticSize.X, -- Auto width based on text
+        Size = UDim2.new(1, -Theme.Spacing.SM * 2 - 22, 1, 0), -- Full width minus padding and icon
+        Position = UDim2.new(0, Theme.Spacing.SM + 22, 0, 0),
         BackgroundTransparency = 1,
         Text = tabName,
         TextColor3 = Theme.Colors.TextSecondary,
         TextSize = Theme.Typography.Small,
         Font = Theme.Typography.FontFamily,
         TextXAlignment = Enum.TextXAlignment.Left,
-        LayoutOrder = 2,
+        TextTruncate = Enum.TextTruncate.AtEnd,
         Parent = tabButton
     })
     
