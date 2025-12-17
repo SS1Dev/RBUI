@@ -97,16 +97,9 @@ function Slider:_Build()
     
     -- Icon
     if self.Icon then
-        self.IconLabel = Utilities.Create("ImageLabel", {
-            Name = "Icon",
-            Size = UDim2.new(0, 16, 0, 16),
-            BackgroundTransparency = 1,
-            Image = Icons.Get(self.Icon),
-            ImageColor3 = Theme.Colors.TextSecondary,
-            ScaleType = Enum.ScaleType.Fit,
-            LayoutOrder = 1,
-            Parent = leftContainer
-        })
+        self.IconLabel = Icons.CreateLabel(self.Icon, 16, Theme.Colors.TextSecondary)
+        self.IconLabel.LayoutOrder = 1
+        self.IconLabel.Parent = leftContainer
     end
     
     -- Text

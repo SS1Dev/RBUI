@@ -80,17 +80,10 @@ function Input:_Build()
     
     -- Icon
     if self.Icon then
-        self.IconLabel = Utilities.Create("ImageLabel", {
-            Name = "Icon",
-            Size = UDim2.new(0, 18, 0, 18),
-            Position = UDim2.new(0, contentPadding, 0.5, 0),
-            AnchorPoint = Vector2.new(0, 0.5),
-            BackgroundTransparency = 1,
-            Image = Icons.Get(self.Icon),
-            ImageColor3 = Theme.Colors.TextSecondary,
-            ScaleType = Enum.ScaleType.Fit,
-            Parent = self.Frame
-        })
+        self.IconLabel = Icons.CreateLabel(self.Icon, 18, Theme.Colors.TextSecondary)
+        self.IconLabel.Position = UDim2.new(0, contentPadding, 0.5, 0)
+        self.IconLabel.AnchorPoint = Vector2.new(0, 0.5)
+        self.IconLabel.Parent = self.Frame
     end
     
     -- TextBox
@@ -126,17 +119,10 @@ function Input:_Build()
             Parent = self.Frame
         })
         
-        Utilities.Create("ImageLabel", {
-            Name = "Icon",
-            Size = UDim2.new(0, 12, 0, 12),
-            Position = UDim2.new(0.5, 0, 0.5, 0),
-            AnchorPoint = Vector2.new(0.5, 0.5),
-            BackgroundTransparency = 1,
-            Image = Icons.Get("x"),
-            ImageColor3 = Theme.Colors.TextSecondary,
-            ScaleType = Enum.ScaleType.Fit,
-            Parent = self.ClearBtn
-        })
+        local clearIcon = Icons.CreateLabel("x", 12, Theme.Colors.TextSecondary)
+        clearIcon.Position = UDim2.new(0.5, 0, 0.5, 0)
+        clearIcon.AnchorPoint = Vector2.new(0.5, 0.5)
+        clearIcon.Parent = self.ClearBtn
         
         Utilities.ApplyCorner(self.ClearBtn, Theme.BorderRadius.SM)
         

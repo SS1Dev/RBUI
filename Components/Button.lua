@@ -131,16 +131,9 @@ function Button:_Build()
     
     -- Icon (left)
     if self.Icon and self.IconPosition == "left" then
-        self.IconLabel = Utilities.Create("ImageLabel", {
-            Name = "Icon",
-            Size = UDim2.new(0, 16, 0, 16),
-            BackgroundTransparency = 1,
-            Image = Icons.Get(self.Icon),
-            ImageColor3 = colors.Text,
-            ScaleType = Enum.ScaleType.Fit,
-            LayoutOrder = 1,
-            Parent = self.ContentContainer
-        })
+        self.IconLabel = Icons.CreateLabel(self.Icon, 16, colors.Text)
+        self.IconLabel.LayoutOrder = 1
+        self.IconLabel.Parent = self.ContentContainer
     end
     
     -- Text
@@ -161,31 +154,18 @@ function Button:_Build()
     
     -- Icon (right)
     if self.Icon and self.IconPosition == "right" then
-        self.IconLabel = Utilities.Create("ImageLabel", {
-            Name = "Icon",
-            Size = UDim2.new(0, 16, 0, 16),
-            BackgroundTransparency = 1,
-            Image = Icons.Get(self.Icon),
-            ImageColor3 = colors.Text,
-            ScaleType = Enum.ScaleType.Fit,
-            LayoutOrder = 3,
-            Parent = self.ContentContainer
-        })
+        self.IconLabel = Icons.CreateLabel(self.Icon, 16, colors.Text)
+        self.IconLabel.LayoutOrder = 3
+        self.IconLabel.Parent = self.ContentContainer
     end
     
     -- Loading spinner
-    self.LoadingSpinner = Utilities.Create("ImageLabel", {
-        Name = "LoadingSpinner",
-        Size = UDim2.new(0, 16, 0, 16),
-        Position = UDim2.new(0.5, 0, 0.5, 0),
-        AnchorPoint = Vector2.new(0.5, 0.5),
-        BackgroundTransparency = 1,
-        Image = Icons.Get("loader-2"),
-        ImageColor3 = colors.Text,
-        ScaleType = Enum.ScaleType.Fit,
-        Visible = false,
-        Parent = self.Btn
-    })
+    self.LoadingSpinner = Icons.CreateLabel("spinner", 16, colors.Text)
+    self.LoadingSpinner.Name = "LoadingSpinner"
+    self.LoadingSpinner.Position = UDim2.new(0.5, 0, 0.5, 0)
+    self.LoadingSpinner.AnchorPoint = Vector2.new(0.5, 0.5)
+    self.LoadingSpinner.Visible = false
+    self.LoadingSpinner.Parent = self.Btn
     
     -- Events
     self.Btn.MouseEnter:Connect(function()
@@ -275,7 +255,7 @@ function Button:SetDisabled(disabled)
             self.TextLabel.TextColor3 = Theme.Colors.TextDisabled
         end
         if self.IconLabel then
-            self.IconLabel.ImageColor3 = Theme.Colors.TextDisabled
+            self.IconLabel.TextColor3 = Theme.Colors.TextDisabled
         end
     else
         local colors = self:_GetVariantColors()
@@ -284,7 +264,7 @@ function Button:SetDisabled(disabled)
             self.TextLabel.TextColor3 = colors.Text
         end
         if self.IconLabel then
-            self.IconLabel.ImageColor3 = colors.Text
+            self.IconLabel.TextColor3 = colors.Text
         end
     end
 end
@@ -322,7 +302,7 @@ function Button:SetVariant(variant)
         self.TextLabel.TextColor3 = colors.Text
     end
     if self.IconLabel then
-        self.IconLabel.ImageColor3 = colors.Text
+        self.IconLabel.TextColor3 = colors.Text
     end
 end
 
@@ -340,7 +320,7 @@ function Button:ApplyTheme()
             Utilities.Tween(self.TextLabel, { TextColor3 = colors.Text }, 0.2)
         end
         if self.IconLabel then
-            Utilities.Tween(self.IconLabel, { ImageColor3 = colors.Text }, 0.2)
+            Utilities.Tween(self.IconLabel, { TextColor3 = colors.Text }, 0.2)
         end
     end
 end

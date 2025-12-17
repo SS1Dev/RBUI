@@ -100,17 +100,10 @@ function Dropdown:_Build()
     
     -- Icon
     if self.Icon then
-        self.IconLabel = Utilities.Create("ImageLabel", {
-            Name = "Icon",
-            Size = UDim2.new(0, 18, 0, 18),
-            Position = UDim2.new(0, contentPadding, 0.5, 0),
-            AnchorPoint = Vector2.new(0, 0.5),
-            BackgroundTransparency = 1,
-            Image = Icons.Get(self.Icon),
-            ImageColor3 = Theme.Colors.TextSecondary,
-            ScaleType = Enum.ScaleType.Fit,
-            Parent = self.MainButton
-        })
+        self.IconLabel = Icons.CreateLabel(self.Icon, 18, Theme.Colors.TextSecondary)
+        self.IconLabel.Position = UDim2.new(0, contentPadding, 0.5, 0)
+        self.IconLabel.AnchorPoint = Vector2.new(0, 0.5)
+        self.IconLabel.Parent = self.MainButton
     end
     
     -- Selected text
@@ -130,17 +123,11 @@ function Dropdown:_Build()
     })
     
     -- Arrow icon
-    self.Arrow = Utilities.Create("ImageLabel", {
-        Name = "Arrow",
-        Size = UDim2.new(0, 16, 0, 16),
-        Position = UDim2.new(1, -contentPadding - 16, 0.5, 0),
-        AnchorPoint = Vector2.new(0, 0.5),
-        BackgroundTransparency = 1,
-        Image = Icons.Get("chevron-down"),
-        ImageColor3 = Theme.Colors.TextSecondary,
-        ScaleType = Enum.ScaleType.Fit,
-        Parent = self.MainButton
-    })
+    self.Arrow = Icons.CreateLabel("chevron-down", 16, Theme.Colors.TextSecondary)
+    self.Arrow.Name = "Arrow"
+    self.Arrow.Position = UDim2.new(1, -contentPadding - 16, 0.5, 0)
+    self.Arrow.AnchorPoint = Vector2.new(0, 0.5)
+    self.Arrow.Parent = self.MainButton
     
     -- Get ScreenGui for overlay
     local Players = game:GetService("Players")
@@ -267,11 +254,14 @@ function Dropdown:_Build()
     
     -- Click outside to close
     local UserInputService = game:GetService("UserInputService")
+    local GuiService = game:GetService("GuiService")
     self._clickConnection = UserInputService.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             if self.IsOpen then
                 -- Check if click is outside dropdown
-                local mousePos = UserInputService:GetMouseLocation()
+                -- GetMouseLocation includes GuiInset, AbsolutePosition doesn't - need to compensate
+                local guiInset = GuiService:GetGuiInset()
+                local mousePos = UserInputService:GetMouseLocation() - guiInset
                 local buttonPos = self.MainButton.AbsolutePosition
                 local buttonSize = self.MainButton.AbsoluteSize
                 local panelPos = self.Panel.AbsolutePosition
@@ -360,10 +350,11 @@ function Dropdown:_BuildOptions()
                 Position = UDim2.new(0.5, 0, 0.5, 0),
                 AnchorPoint = Vector2.new(0.5, 0.5),
                 BackgroundTransparency = 1,
-                Image = Icons.Get("check"),
-                ImageColor3 = Theme.Colors.TextPrimary,
-                ImageTransparency = self:_IsSelected(optionValue) and 0 or 1,
-                ScaleType = Enum.ScaleType.Fit,
+                Text = Icons.Get("check"),
+                TextColor3 = Theme.Colors.TextPrimary,
+                TextTransparency = self:_IsSelected(optionValue) and 0 or 1,
+                TextSize = 12,
+                Font = Enum.Font.GothamBold,
                 ZIndex = 104,
                 Parent = checkbox
             })
@@ -373,18 +364,11 @@ function Dropdown:_BuildOptions()
         
         -- Option icon
         if optionIcon then
-            Utilities.Create("ImageLabel", {
-                Name = "Icon",
-                Size = UDim2.new(0, 16, 0, 16),
-                Position = UDim2.new(0, leftOffset, 0.5, 0),
-                AnchorPoint = Vector2.new(0, 0.5),
-                BackgroundTransparency = 1,
-                Image = Icons.Get(optionIcon),
-                ImageColor3 = Theme.Colors.TextSecondary,
-                ScaleType = Enum.ScaleType.Fit,
-                ZIndex = 103,
-                Parent = optBtn
-            })
+            local optIcon = Icons.CreateLabel(optionIcon, 16, Theme.Colors.TextSecondary)
+            optIcon.Position = UDim2.new(0, leftOffset, 0.5, 0)
+            optIcon.AnchorPoint = Vector2.new(0, 0.5)
+            optIcon.ZIndex = 103
+            optIcon.Parent = optBtn
             leftOffset = leftOffset + 24
         end
         
@@ -406,17 +390,12 @@ function Dropdown:_BuildOptions()
         
         -- Selected indicator (single selection)
         if not self.Multiple and self:_IsSelected(optionValue) then
-            Utilities.Create("ImageLabel", {
-                Name = "Selected",
-                Size = UDim2.new(0, 16, 0, 16),
-                Position = UDim2.new(1, -Theme.Spacing.SM - 16, 0.5, 0),
-                AnchorPoint = Vector2.new(0, 0.5),
-                BackgroundTransparency = 1,
-                Image = Icons.Get("check"),
-                ImageColor3 = Theme.Colors.Primary,
-                ScaleType = Enum.ScaleType.Fit,
-                ZIndex = 103,
-                Parent = optBtn
+            local selectedIcon = Icons.CreateLabel("check", 16, Theme.Colors.Primary)
+            selectedIcon.Name = "Selected"
+            selectedIcon.Position = UDim2.new(1, -Theme.Spacing.SM - 16, 0.5, 0)
+            selectedIcon.AnchorPoint = Vector2.new(0, 0.5)
+            selectedIcon.ZIndex = 103
+            selectedIcon.Parent = optBtn
             })
         end
         
@@ -553,10 +532,15 @@ function Dropdown:Open()
     )
     
     -- Position panel below the main button (using absolute position)
+    -- AbsolutePosition gives screen coords (0,0 = top-left of screen)
+    -- ScreenGui with IgnoreGuiInset = false starts at (0, guiInset.Y) in screen coords
+    -- So we need to subtract the inset from Y to position correctly in the ScreenGui
+    local GuiService = game:GetService("GuiService")
+    local guiInset = GuiService:GetGuiInset()
     local buttonPos = self.MainButton.AbsolutePosition
     local buttonSize = self.MainButton.AbsoluteSize
     local panelX = buttonPos.X
-    local panelY = buttonPos.Y + buttonSize.Y + Theme.Spacing.XS
+    local panelY = buttonPos.Y + buttonSize.Y + Theme.Spacing.XS - guiInset.Y
     local panelWidth = buttonSize.X
     
     self.Panel.Position = UDim2.new(0, panelX, 0, panelY)

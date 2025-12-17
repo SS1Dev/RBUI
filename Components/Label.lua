@@ -67,16 +67,9 @@ function Label:_Build()
     
     -- Icon
     if self.Icon then
-        self.IconLabel = Utilities.Create("ImageLabel", {
-            Name = "Icon",
-            Size = UDim2.new(0, self.TextSize, 0, self.TextSize),
-            BackgroundTransparency = 1,
-            Image = Icons.Get(self.Icon),
-            ImageColor3 = self.TextColor,
-            ScaleType = Enum.ScaleType.Fit,
-            LayoutOrder = 1,
-            Parent = self.Frame
-        })
+        self.IconLabel = Icons.CreateLabel(self.Icon, self.TextSize, self.TextColor)
+        self.IconLabel.LayoutOrder = 1
+        self.IconLabel.Parent = self.Frame
     end
     
     -- Text
@@ -133,7 +126,7 @@ function Label:SetColor(color)
     self.TextColor = color
     self.TextLabel.TextColor3 = color
     if self.IconLabel then
-        self.IconLabel.ImageColor3 = color
+        self.IconLabel.TextColor3 = color
     end
 end
 

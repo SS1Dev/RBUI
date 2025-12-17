@@ -98,7 +98,7 @@ function Container:_Build()
         Parent = self.ScreenGui
     })
     
-    Utilities.ApplyCorner(self.Frame, Theme.BorderRadius.XXL)
+    Utilities.ApplyCorner(self.Frame, Theme.BorderRadius.LG)
     
     -- Resize Handle (Bottom-Right Corner)
     if self.Resizable then
@@ -163,20 +163,14 @@ function Container:_BuildHeader()
         BackgroundColor3 = Theme.Colors.Primary,
         Parent = self.Header
     })
-    Utilities.ApplyCorner(logoContainer, Theme.BorderRadius.SM)
+    Utilities.ApplyCorner(logoContainer, Theme.BorderRadius.MD)
     
     -- Logo Icon
-    Utilities.Create("ImageLabel", {
-        Name = "LogoIcon",
-        Size = UDim2.new(0, 18, 0, 18),
-        Position = UDim2.new(0.5, 0, 0.5, 0),
-        AnchorPoint = Vector2.new(0.5, 0.5),
-        BackgroundTransparency = 1,
-        Image = Icons.Get("box"),
-        ImageColor3 = Theme.Colors.TextPrimary,
-        ScaleType = Enum.ScaleType.Fit,
-        Parent = logoContainer
-    })
+    local logoIcon = Icons.CreateLabel("box", 18, Theme.Colors.TextPrimary)
+    logoIcon.Name = "LogoIcon"
+    logoIcon.Position = UDim2.new(0.5, 0, 0.5, 0)
+    logoIcon.AnchorPoint = Vector2.new(0.5, 0.5)
+    logoIcon.Parent = logoContainer
     
     -- Title
     self.TitleLabel = Utilities.Create("TextLabel", {
@@ -236,26 +230,19 @@ function Container:_CreateWindowControl(iconName, callback, hoverColor)
         AutoButtonColor = false
     })
     
-    local iconImg = Utilities.Create("ImageLabel", {
-        Name = "Icon",
-        Size = UDim2.new(0, 14, 0, 14),
-        Position = UDim2.new(0.5, 0, 0.5, 0),
-        AnchorPoint = Vector2.new(0.5, 0.5),
-        BackgroundTransparency = 1,
-        Image = Icons.Get(iconName),
-        ImageColor3 = Theme.Colors.TextSecondary,
-        ScaleType = Enum.ScaleType.Fit,
-        Parent = btn
-    })
+    local iconImg = Icons.CreateLabel(iconName, 14, Theme.Colors.TextSecondary)
+    iconImg.Position = UDim2.new(0.5, 0, 0.5, 0)
+    iconImg.AnchorPoint = Vector2.new(0.5, 0.5)
+    iconImg.Parent = btn
     
-    Utilities.ApplyCorner(btn, Theme.BorderRadius.SM)
+    Utilities.ApplyCorner(btn, Theme.BorderRadius.MD)
     
     btn.MouseEnter:Connect(function()
         Utilities.Tween(btn, {
             BackgroundColor3 = hoverColor or Theme.Colors.Primary
         })
         Utilities.Tween(iconImg, {
-            ImageColor3 = Theme.Colors.TextPrimary
+            TextColor3 = Theme.Colors.TextPrimary
         })
     end)
     
@@ -264,7 +251,7 @@ function Container:_CreateWindowControl(iconName, callback, hoverColor)
             BackgroundColor3 = Theme.Colors.BackgroundTertiary
         })
         Utilities.Tween(iconImg, {
-            ImageColor3 = Theme.Colors.TextSecondary
+            TextColor3 = Theme.Colors.TextSecondary
         })
     end)
     
@@ -450,20 +437,13 @@ function Container:AddTab(config)
         Parent = self.SidebarContent
     })
     
-    Utilities.ApplyCorner(tabButton, Theme.BorderRadius.SM)
+    Utilities.ApplyCorner(tabButton, Theme.BorderRadius.MD)
     
     -- Tab Icon
-    local iconLabel = Utilities.Create("ImageLabel", {
-        Name = "Icon",
-        Size = UDim2.new(0, 16, 0, 16),
-        Position = UDim2.new(0, Theme.Spacing.SM, 0.5, 0),
-        AnchorPoint = Vector2.new(0, 0.5),
-        BackgroundTransparency = 1,
-        Image = Icons.Get(tabIcon),
-        ImageColor3 = Theme.Colors.TextSecondary,
-        ScaleType = Enum.ScaleType.Fit,
-        Parent = tabButton
-    })
+    local iconLabel = Icons.CreateLabel(tabIcon, 16, Theme.Colors.TextSecondary)
+    iconLabel.Position = UDim2.new(0, Theme.Spacing.SM, 0.5, 0)
+    iconLabel.AnchorPoint = Vector2.new(0, 0.5)
+    iconLabel.Parent = tabButton
     
     -- Tab Text
     local textLabel = Utilities.Create("TextLabel", {
@@ -567,7 +547,7 @@ function Container:SelectTab(tabId)
     if self.CurrentTab and self.Tabs[self.CurrentTab] then
         local currentTab = self.Tabs[self.CurrentTab]
         Utilities.Tween(currentTab.Button, { BackgroundTransparency = 1 })
-        Utilities.Tween(currentTab.Icon, { ImageColor3 = Theme.Colors.TextSecondary })
+        Utilities.Tween(currentTab.Icon, { TextColor3 = Theme.Colors.TextSecondary })
         Utilities.Tween(currentTab.Text, { TextColor3 = Theme.Colors.TextSecondary })
         Utilities.Tween(currentTab.Indicator, { BackgroundTransparency = 1 })
         currentTab.Content.Visible = false
@@ -582,7 +562,7 @@ function Container:SelectTab(tabId)
             BackgroundTransparency = 0,
             BackgroundColor3 = Theme.Colors.Primary
         })
-        Utilities.Tween(newTab.Icon, { ImageColor3 = Theme.Colors.TextPrimary })
+        Utilities.Tween(newTab.Icon, { TextColor3 = Theme.Colors.TextPrimary })
         Utilities.Tween(newTab.Text, { TextColor3 = Theme.Colors.TextPrimary })
         Utilities.Tween(newTab.Indicator, { BackgroundTransparency = 0 })
         newTab.Content.Visible = true
@@ -736,9 +716,13 @@ function Container:ApplyTheme()
             for _, btn in ipairs(controls:GetChildren()) do
                 if btn:IsA("TextButton") then
                     Utilities.Tween(btn, { 
-                        BackgroundColor3 = Theme.Colors.BackgroundTertiary,
-                        TextColor3 = Theme.Colors.TextSecondary
+                        BackgroundColor3 = Theme.Colors.BackgroundTertiary
                     }, 0.2)
+                    -- Update icon inside button
+                    local icon = btn:FindFirstChild("Icon")
+                    if icon then
+                        Utilities.Tween(icon, { TextColor3 = Theme.Colors.TextSecondary }, 0.2)
+                    end
                 end
             end
         end
