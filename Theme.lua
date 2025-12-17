@@ -928,17 +928,17 @@ Theme.Spacing = {
 }
 
 -- ═══════════════════════════════════════════════════════════════
--- BORDER RADIUS (Minimal: 2px-4px)
+-- BORDER RADIUS (4px-6px for panel)
 -- ═══════════════════════════════════════════════════════════════
 
 Theme.BorderRadius = {
     None = UDim.new(0, 0),
     XS = UDim.new(0, 2),   -- Smallest elements
-    SM = UDim.new(0, 2),   -- Small elements
-    MD = UDim.new(0, 3),   -- Medium elements
-    LG = UDim.new(0, 4),   -- Large elements, main panel
-    XL = UDim.new(0, 4),   -- Extra large
-    XXL = UDim.new(0, 4),  -- Main panel
+    SM = UDim.new(0, 3),   -- Small elements
+    MD = UDim.new(0, 4),   -- Medium elements
+    LG = UDim.new(0, 6),   -- Large elements, main panel
+    XL = UDim.new(0, 6),   -- Extra large
+    XXL = UDim.new(0, 6),  -- Main panel
     Full = UDim.new(0, 9999), -- Pill shape (toggle knob)
 }
 
