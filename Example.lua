@@ -195,6 +195,8 @@ for _, themeName in ipairs(UIFramework.GetAvailableThemes()) do
 end
 
 UIFramework.Dropdown.new({
+    Label = "Theme",
+    LabelIcon = "palette",
     Text = "Select Theme",
     Icon = "palette",
     Value = UIFramework.GetCurrentTheme(),
@@ -404,6 +406,8 @@ UIFramework.CreateSection({
 
 -- Single selection dropdown
 UIFramework.Dropdown.new({
+    Label = "Team",
+    LabelIcon = "users",
     Text = "Select Team",
     Icon = "users",
     Options = {
@@ -423,6 +427,8 @@ UIFramework.Dropdown.new({
 
 -- Multiple selection dropdown
 UIFramework.Dropdown.new({
+    Label = "Abilities",
+    LabelIcon = "star",
     Text = "Select Abilities",
     Icon = "star",
     Multiple = true,

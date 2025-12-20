@@ -14,14 +14,17 @@ local Icons = require(script.Parent.Parent.Icons)
     Create a new Dropdown
     
     @param config {
-        Text: string - Dropdown label/placeholder
-        Icon: string - Font Awesome icon name
+        Label: string - Label text (displayed on left side)
+        LabelIcon: string - Icon for label
+        Text: string - Dropdown placeholder
+        Icon: string - Font Awesome icon name (inside dropdown)
         Options: table - Array of options {Text, Value, Icon}
         Value: any - Initial selected value (single) or table (multiple)
         Multiple: boolean - Allow multiple selection
         MaxHeight: number - Maximum dropdown height
         Searchable: boolean - Enable search
         Size: UDim2 - Dropdown size
+        DropdownWidth: UDim - Width of dropdown field (default: 0.5 scale)
         Disabled: boolean - Disable dropdown
         Parent: Instance - Parent instance
         OnChange: function(value) - Selection change callback
@@ -34,6 +37,8 @@ function Dropdown.new(config)
     
     config = config or {}
     
+    self.Label = config.Label
+    self.LabelIcon = config.LabelIcon
     self.Text = config.Text or "Select..."
     self.Icon = config.Icon
     self.Options = config.Options or {}
@@ -41,6 +46,7 @@ function Dropdown.new(config)
     self.MaxHeight = config.MaxHeight or 200
     self.Searchable = config.Searchable or false
     self.Size = config.Size or UDim2.new(1, 0, 0, Theme.Sizes.InputHeight)
+    self.DropdownWidth = config.DropdownWidth or UDim.new(0.5, 0)
     self.Disabled = config.Disabled or false
     self.Parent = config.Parent
     
@@ -67,7 +73,7 @@ function Dropdown.new(config)
 end
 
 function Dropdown:_Build()
-    -- Container (ClipsDescendants = false allows panel to show outside)
+    -- Main container (for label + dropdown layout)
     self.Frame = Utilities.Create("Frame", {
         Name = "Dropdown",
         Size = self.Size,
@@ -75,6 +81,56 @@ function Dropdown:_Build()
         ClipsDescendants = false,
         ZIndex = 10,
         Parent = self.Parent
+    })
+    
+    -- Calculate dropdown width (always show label, so always use DropdownWidth)
+    local dropdownWidth = self.DropdownWidth
+    
+    -- Left side (Label + Icon) - always show label
+    self.LeftContainer = Utilities.Create("Frame", {
+        Name = "Left",
+        Size = UDim2.new(1 - dropdownWidth.Scale, -dropdownWidth.Offset - Theme.Spacing.MD, 1, 0),
+        BackgroundTransparency = 1,
+        Parent = self.Frame
+    })
+    
+    Utilities.ApplyListLayout(self.LeftContainer, {
+        Direction = Enum.FillDirection.Horizontal,
+        VerticalAlignment = Enum.VerticalAlignment.Center,
+        Padding = Theme.Spacing.SM
+    })
+    
+    -- Label Icon
+    if self.LabelIcon then
+        self.LabelIconElement = Icons.CreateLabel(self.LabelIcon, 16, Theme.Colors.TextSecondary)
+        self.LabelIconElement.LayoutOrder = 1
+        self.LabelIconElement.Parent = self.LeftContainer
+    end
+    
+    -- Label Text (always show)
+    self.LabelText = Utilities.Create("TextLabel", {
+        Name = "Label",
+        Size = UDim2.new(1, self.LabelIcon and -26 or 0, 1, 0),
+        BackgroundTransparency = 1,
+        Text = self.Label or "Dropdown",
+        TextColor3 = Theme.Colors.TextPrimary,
+        TextSize = Theme.Typography.Body,
+        Font = Theme.Typography.FontFamily,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        TextTruncate = Enum.TextTruncate.AtEnd,
+        LayoutOrder = 2,
+        Parent = self.LeftContainer
+    })
+    
+    -- Dropdown button container
+    self.DropdownContainer = Utilities.Create("Frame", {
+        Name = "DropdownContainer",
+        Size = UDim2.new(dropdownWidth.Scale, dropdownWidth.Offset, 1, 0),
+        Position = UDim2.new(1 - dropdownWidth.Scale, -dropdownWidth.Offset, 0, 0),
+        AnchorPoint = Vector2.new(1, 0),
+        BackgroundTransparency = 1,
+        ClipsDescendants = false,
+        Parent = self.Frame
     })
     
     -- Main button
@@ -85,7 +141,7 @@ function Dropdown:_Build()
         BorderSizePixel = 0,
         Text = "",
         AutoButtonColor = false,
-        Parent = self.Frame
+        Parent = self.DropdownContainer
     })
     
     Utilities.ApplyCorner(self.MainButton, Theme.BorderRadius.LG)
@@ -489,6 +545,15 @@ function Dropdown:_SelectOption(value, text)
     end
 end
 
+function Dropdown:_UpdateLabelTheme()
+    if self.LabelText then
+        self.LabelText.TextColor3 = Theme.Colors.TextPrimary
+    end
+    if self.LabelIconElement then
+        self.LabelIconElement.TextColor3 = Theme.Colors.TextSecondary
+    end
+end
+
 function Dropdown:_IsSelected(value)
     if self.Multiple then
         return table.find(self.Value, value) ~= nil
@@ -561,7 +626,7 @@ function Dropdown:Open()
         self.MaxHeight
     )
     
-    -- Position panel below the main button (using absolute position)
+    -- Position panel below the dropdown button (using absolute position)
     -- AbsolutePosition and ScreenGui with IgnoreGuiInset = false use the same coordinate system
     -- So we don't need to subtract the inset
     local buttonPos = self.MainButton.AbsolutePosition
@@ -690,12 +755,24 @@ function Dropdown:SetDisabled(disabled)
         if self.IconLabel then
             self.IconLabel.TextColor3 = Theme.Colors.TextDisabled
         end
+        if self.LabelText then
+            self.LabelText.TextColor3 = Theme.Colors.TextDisabled
+        end
+        if self.LabelIconElement then
+            self.LabelIconElement.TextColor3 = Theme.Colors.TextDisabled
+        end
     else
         self.MainButton.BackgroundColor3 = Theme.Colors.InputBackground
         self.SelectedText.TextColor3 = self:_HasValue() and Theme.Colors.TextPrimary or Theme.Colors.TextMuted
         self.Arrow.TextColor3 = Theme.Colors.TextSecondary
         if self.IconLabel then
             self.IconLabel.TextColor3 = Theme.Colors.TextSecondary
+        end
+        if self.LabelText then
+            self.LabelText.TextColor3 = Theme.Colors.TextPrimary
+        end
+        if self.LabelIconElement then
+            self.LabelIconElement.TextColor3 = Theme.Colors.TextSecondary
         end
     end
 end
@@ -707,6 +784,9 @@ end
 
 -- Apply theme
 function Dropdown:ApplyTheme()
+    -- Update label theme
+    self:_UpdateLabelTheme()
+    
     if not self.Disabled then
         -- Main button
         Utilities.Tween(self.MainButton, { BackgroundColor3 = Theme.Colors.InputBackground }, 0.2)
