@@ -41,7 +41,7 @@ local UIFramework = loadstring(game:HttpGet("https://github.com/SS1Dev/RBUI/rele
 local Panel = UIFramework.CreatePanel({
     Title = "🎮 Game Panel",
     Size = UDim2.new(0, 700, 0, 450),
-    Theme = "Rose", -- Set default theme: Dark, Light, Pink, Blue, Golden, Rose, DarkBlue, DarkPink, DarkGolden, DarkRose, LightPink, LightGolden, LightBlue, LightRose
+    Theme = "PlatinumGray", -- Set default theme: PlatinumGray, TypographyContrast, VibrantAccents, Futuristic
     Resizable = true, -- Enable resize (drag bottom-right corner)
     MinWidth = 500,   -- Minimum panel width
     MinHeight = 350,  -- Minimum panel height
@@ -764,7 +764,7 @@ local features = {
     { icon = "expand", text = "Resizable - Drag corner to resize panel" },
     { icon = "move", text = "Draggable - Move panel from anywhere" },
     { icon = "eye", text = "Transparency - Configurable panel transparency" },
-    { icon = "palette", text = "Themes - 14 built-in color themes" },
+    { icon = "palette", text = "Themes - 4 built-in color themes" },
     { icon = "circle", text = "macOS Style - Circular minimize/close buttons" }
 }
 
