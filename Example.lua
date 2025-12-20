@@ -97,49 +97,46 @@ UIFramework.Label.new({
 
 UIFramework.CreateSpacer({ Parent = dashboardTab })
 
--- Stats cards with Bento Design Grid Layout
--- Bento Grid creates a flexible grid layout where cards can span multiple columns/rows
-local bentoGrid = UIFramework.CreateBentoGrid({
-    Name = "StatsBentoGrid",
-    Columns = 4,  -- Number of columns in the grid
-    Gap = UIFramework.Theme.Spacing.MD,  -- Gap between cards
-    CellHeight = 100,  -- Base height for each grid cell
+-- Stats cards
+local statsContainer = UIFramework.Utilities.Create("Frame", {
+    Name = "StatsContainer",
+    Size = UDim2.new(1, 0, 0, 80),
+    BackgroundTransparency = 1,
     Parent = dashboardTab
 })
--- Note: bentoGrid is a wrapper object with methods:
---   - bentoGrid:CreateCard(config) - Create and add a card to the grid
---   - bentoGrid:AddItem(item, colSpan, rowSpan, layoutOrder) - Add existing item to grid
---   - bentoGrid.Frame - Access the underlying Frame instance
---   - All Frame properties/methods are proxied (e.g., bentoGrid.Parent, bentoGrid.Size)
 
-local function createBentoStatCard(name, value, icon, color, colSpan, rowSpan)
-    local card = bentoGrid:CreateCard({
-        Name = name .. "Card",
-        ColSpan = colSpan or 1,
-        RowSpan = rowSpan or 1,
+UIFramework.Utilities.ApplyListLayout(statsContainer, {
+    Direction = Enum.FillDirection.Horizontal,
+    Padding = UIFramework.Theme.Spacing.MD
+})
+
+local function createStatCard(name, value, icon, color)
+    local card = UIFramework.CreateCard({
+        Size = UDim2.new(0, 180, 0, 70),
+        Parent = statsContainer,
         AutoLayout = false
     })
     
     UIFramework.Utilities.Create("TextLabel", {
         Name = "Icon",
-        Size = UDim2.new(0, 40, 0, 40),
+        Size = UDim2.new(0, 32, 0, 32),
         Position = UDim2.new(0, 12, 0, 12),
         BackgroundTransparency = 1,
         Text = UIFramework.Icons.Get(icon),
         TextColor3 = color,
-        TextSize = 28,
+        TextSize = 24,
         Font = Enum.Font.GothamBold,
         Parent = card
     })
     
     UIFramework.Utilities.Create("TextLabel", {
         Name = "Value",
-        Size = UDim2.new(1, -60, 0, 28),
-        Position = UDim2.new(0, 60, 0, 12),
+        Size = UDim2.new(1, -60, 0, 24),
+        Position = UDim2.new(0, 52, 0, 10),
         BackgroundTransparency = 1,
         Text = tostring(value),
         TextColor3 = UIFramework.Theme.Colors.TextPrimary,
-        TextSize = 22,
+        TextSize = 20,
         Font = UIFramework.Theme.Typography.FontFamilyBold,
         TextXAlignment = Enum.TextXAlignment.Left,
         Parent = card
@@ -147,12 +144,12 @@ local function createBentoStatCard(name, value, icon, color, colSpan, rowSpan)
     
     UIFramework.Utilities.Create("TextLabel", {
         Name = "Name",
-        Size = UDim2.new(1, -60, 0, 18),
-        Position = UDim2.new(0, 60, 0, 42),
+        Size = UDim2.new(1, -60, 0, 16),
+        Position = UDim2.new(0, 52, 0, 36),
         BackgroundTransparency = 1,
         Text = name,
         TextColor3 = UIFramework.Theme.Colors.TextSecondary,
-        TextSize = 13,
+        TextSize = 12,
         Font = UIFramework.Theme.Typography.FontFamily,
         TextXAlignment = Enum.TextXAlignment.Left,
         Parent = card
@@ -161,13 +158,10 @@ local function createBentoStatCard(name, value, icon, color, colSpan, rowSpan)
     return card
 end
 
--- Bento Design: Cards with varying sizes
-createBentoStatCard("Players Online", "1,234", "users", UIFramework.Theme.Colors.Primary, 1, 1)
-createBentoStatCard("Total Revenue", "$5,678", "coins", UIFramework.Theme.Colors.Success, 2, 1) -- Spans 2 columns
-createBentoStatCard("Active Games", "89", "gamepad", UIFramework.Theme.Colors.Warning, 1, 1)
-createBentoStatCard("Server Status", "Online", "server", UIFramework.Theme.Colors.Info, 1, 2) -- Spans 2 rows
-createBentoStatCard("Daily Active", "567", "chart-line", UIFramework.Theme.Colors.Accent, 1, 1)
-createBentoStatCard("Growth Rate", "+12.5%", "arrow-up", UIFramework.Theme.Colors.Success, 2, 1) -- Spans 2 columns
+createStatCard("Players Online", "1,234", "users", UIFramework.Theme.Colors.Primary)
+createStatCard("Total Revenue", "$5,678", "coins", UIFramework.Theme.Colors.Success)
+createStatCard("Active Games", "89", "gamepad", UIFramework.Theme.Colors.Warning)
+createStatCard("Server Status", "Online", "server", UIFramework.Theme.Colors.Info)
 
 -- ═══════════════════════════════════════════════════════════════
 -- TAB 2: PLAYER SETTINGS
@@ -775,8 +769,7 @@ local features = {
     { icon = "move", text = "Draggable - Move panel from anywhere" },
     { icon = "eye", text = "Transparency - Configurable panel transparency" },
     { icon = "palette", text = "Themes - 14 built-in color themes" },
-    { icon = "circle", text = "macOS Style - Circular minimize/close buttons" },
-    { icon = "grid", text = "Bento Grid - Modern grid layout with flexible card sizes" }
+    { icon = "circle", text = "macOS Style - Circular minimize/close buttons" }
 }
 
 UIFramework.CreateSection({
@@ -881,8 +874,6 @@ local tips = {
     "🔔 Use notifications to provide user feedback",
     "👁 Adjust panel transparency in Settings tab",
     "➖ Dividers automatically change color with theme",
-    "📦 Bento Grid - Create flexible card layouts with varying sizes",
-    "🎯 Use ColSpan and RowSpan to make cards span multiple grid cells",
 }
 
 for _, tip in ipairs(tips) do
