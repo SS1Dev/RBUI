@@ -89,7 +89,8 @@ function Dropdown:_Build()
     -- Left side (Label + Icon) - always show label
     self.LeftContainer = Utilities.Create("Frame", {
         Name = "Left",
-        Size = UDim2.new(1 - dropdownWidth.Scale, -(dropdownWidth.Offset + Theme.Spacing.MD), 1, 0),
+        Size = UDim2.new(1 - dropdownWidth.Scale, -dropdownWidth.Offset - Theme.Spacing.MD, 1, 0),
+        Position = UDim2.new(0, 0, 0, 0),
         BackgroundTransparency = 1,
         Parent = self.Frame
     })
@@ -126,7 +127,7 @@ function Dropdown:_Build()
     self.DropdownContainer = Utilities.Create("Frame", {
         Name = "DropdownContainer",
         Size = UDim2.new(dropdownWidth.Scale, dropdownWidth.Offset, 1, 0),
-        Position = UDim2.new(1 - dropdownWidth.Scale, -dropdownWidth.Offset, 0, 0),
+        Position = UDim2.new(1, 0, 0, 0),
         AnchorPoint = Vector2.new(1, 0),
         BackgroundTransparency = 1,
         ClipsDescendants = false,
