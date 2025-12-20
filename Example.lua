@@ -182,20 +182,10 @@ UIFramework.CreateSection({
 local themeOptions = {}
 for _, themeName in ipairs(UIFramework.GetAvailableThemes()) do
     local icons = {
-        Dark = "moon",
-        Light = "sun",
-        Pink = "heart",
-        Blue = "water",
-        Golden = "crown",
-        Rose = "heart",
-        DarkBlue = "moon",
-        DarkPink = "moon",
-        DarkGolden = "moon",
-        DarkRose = "moon",
-        LightPink = "sun",
-        LightGolden = "sun",
-        LightBlue = "sun",
-        LightRose = "sun"
+        PlatinumGray = "circle",
+        TypographyContrast = "text",
+        VibrantAccents = "sparkles",
+        Futuristic = "rocket"
     }
     table.insert(themeOptions, {
         Text = themeName,
