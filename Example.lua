@@ -98,13 +98,19 @@ UIFramework.Label.new({
 UIFramework.CreateSpacer({ Parent = dashboardTab })
 
 -- Stats cards with Bento Design Grid Layout
+-- Bento Grid creates a flexible grid layout where cards can span multiple columns/rows
 local bentoGrid = UIFramework.CreateBentoGrid({
     Name = "StatsBentoGrid",
-    Columns = 4,
-    Gap = UIFramework.Theme.Spacing.MD,
-    CellHeight = 100,
+    Columns = 4,  -- Number of columns in the grid
+    Gap = UIFramework.Theme.Spacing.MD,  -- Gap between cards
+    CellHeight = 100,  -- Base height for each grid cell
     Parent = dashboardTab
 })
+-- Note: bentoGrid is a wrapper object with methods:
+--   - bentoGrid:CreateCard(config) - Create and add a card to the grid
+--   - bentoGrid:AddItem(item, colSpan, rowSpan, layoutOrder) - Add existing item to grid
+--   - bentoGrid.Frame - Access the underlying Frame instance
+--   - All Frame properties/methods are proxied (e.g., bentoGrid.Parent, bentoGrid.Size)
 
 local function createBentoStatCard(name, value, icon, color, colSpan, rowSpan)
     local card = bentoGrid:CreateCard({
@@ -875,6 +881,8 @@ local tips = {
     "🔔 Use notifications to provide user feedback",
     "👁 Adjust panel transparency in Settings tab",
     "➖ Dividers automatically change color with theme",
+    "📦 Bento Grid - Create flexible card layouts with varying sizes",
+    "🎯 Use ColSpan and RowSpan to make cards span multiple grid cells",
 }
 
 for _, tip in ipairs(tips) do

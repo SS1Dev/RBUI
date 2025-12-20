@@ -397,37 +397,48 @@ function UIFramework.CreateBentoGrid(config)
         end
     end)
     
+    -- Create wrapper object with methods
+    local gridWrapper = {
+        Frame = grid,
+        _gridItems = gridItems,
+        _updateLayout = updateLayout,
+        _gridId = gridId,
+        _columns = columns,
+        _gap = gap,
+        _cellHeight = cellHeight
+    }
+    
     -- Method to add item to grid
-    function grid:AddItem(item, colSpan, rowSpan, layoutOrder)
+    function gridWrapper:AddItem(item, colSpan, rowSpan, layoutOrder)
         colSpan = colSpan or 1
         rowSpan = rowSpan or 1
         
         item:SetAttribute("BentoColSpan", colSpan)
         item:SetAttribute("BentoRowSpan", rowSpan)
-        item:SetAttribute("BentoGridId", gridId)
+        item:SetAttribute("BentoGridId", self._gridId)
         if layoutOrder then
             item.LayoutOrder = layoutOrder
         end
         
-        item.Parent = grid
-        table.insert(gridItems, item)
+        item.Parent = self.Frame
+        table.insert(self._gridItems, item)
         
         -- Update layout
         task.spawn(function()
             task.wait()
-            updateLayout()
+            self._updateLayout()
         end)
     end
     
     -- Helper method to create card in grid
-    function grid:CreateCard(cardConfig)
+    function gridWrapper:CreateCard(cardConfig)
         cardConfig = cardConfig or {}
-        cardConfig.Parent = grid
+        cardConfig.Parent = self.Frame
         cardConfig._BentoGrid = {
-            Id = gridId,
-            Columns = columns,
-            Gap = gap,
-            CellHeight = cellHeight
+            Id = self._gridId,
+            Columns = self._columns,
+            Gap = self._gap,
+            CellHeight = self._cellHeight
         }
         
         local card = UIFramework.CreateCard(cardConfig)
@@ -435,13 +446,29 @@ function UIFramework.CreateBentoGrid(config)
         return card
     end
     
+    -- Use metatable to proxy Frame properties/methods
+    setmetatable(gridWrapper, {
+        __index = function(t, k)
+            -- First check wrapper methods
+            if rawget(t, k) then
+                return rawget(t, k)
+            end
+            -- Then check Frame
+            return grid[k]
+        end,
+        __newindex = function(t, k, v)
+            -- Set on Frame if it's a Frame property
+            grid[k] = v
+        end
+    })
+    
     -- Initial layout update
     task.spawn(function()
         task.wait(0.1)
         updateLayout()
     end)
     
-    return grid
+    return gridWrapper
 end
 
 -- Create a button group (horizontal buttons)
