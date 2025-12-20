@@ -193,35 +193,255 @@ function UIFramework.CreateSpacer(config)
     return spacer
 end
 
--- Create a card container
+-- Create a card container (Bento Design style)
 function UIFramework.CreateCard(config)
     config = config or {}
     
+    -- Bento Design: Support for colSpan and rowSpan
+    local colSpan = config.ColSpan or 1
+    local rowSpan = config.RowSpan or 1
+    
+    -- Calculate size based on grid if in Bento Grid
+    local size = config.Size
+    if config._BentoGrid and not size then
+        local cellWidth = config._BentoGrid.CellWidth
+        local cellHeight = config._BentoGrid.CellHeight
+        local gap = config._BentoGrid.Gap
+        
+        size = UDim2.new(
+            0, (cellWidth * colSpan) + (gap * (colSpan - 1)),
+            0, (cellHeight * rowSpan) + (gap * (rowSpan - 1))
+        )
+    end
+    
     local card = UIFramework.Utilities.Create("Frame", {
         Name = config.Name or "Card",
-        Size = config.Size or UDim2.new(1, 0, 0, 100),
+        Size = size or UDim2.new(1, 0, 0, 100),
         BackgroundColor3 = config.Color or UIFramework.Theme.Colors.Surface,
         BorderSizePixel = 0,
         Parent = config.Parent
     })
     
-    UIFramework.Utilities.ApplyCorner(card, UIFramework.Theme.BorderRadius.LG)
+    -- Bento Design: Enhanced rounded corners
+    UIFramework.Utilities.ApplyCorner(card, config.CornerRadius or UIFramework.Theme.BorderRadius.MD)
+    
+    -- Bento Design: Subtle border
     UIFramework.Utilities.ApplyStroke(card, {
-        Color = UIFramework.Theme.Colors.SurfaceBorder,
-        Thickness = 1
+        Color = config.BorderColor or UIFramework.Theme.Colors.SurfaceBorder,
+        Thickness = config.BorderThickness or 1,
+        Transparency = config.BorderTransparency or 0.5
     })
     
+    -- Bento Design: Padding
     if config.Padding ~= false then
         UIFramework.Utilities.ApplyPadding(card, config.Padding or UIFramework.Theme.Spacing.MD)
     end
     
+    -- Auto layout for content
     if config.AutoLayout ~= false then
         UIFramework.Utilities.ApplyListLayout(card, {
+            Direction = config.LayoutDirection or Enum.FillDirection.Vertical,
             Padding = config.LayoutPadding or UIFramework.Theme.Spacing.SM
         })
     end
     
+    -- Store Bento metadata
+    if config._BentoGrid then
+        card:SetAttribute("BentoColSpan", colSpan)
+        card:SetAttribute("BentoRowSpan", rowSpan)
+        card:SetAttribute("BentoGridId", config._BentoGrid.Id)
+    end
+    
     return card
+end
+
+-- Create a Bento Grid Layout (Bento Design style)
+function UIFramework.CreateBentoGrid(config)
+    config = config or {}
+    
+    local columns = config.Columns or 4
+    local gap = config.Gap or UIFramework.Theme.Spacing.MD
+    local cellHeight = config.CellHeight or 120
+    
+    -- Create grid container
+    local grid = UIFramework.Utilities.Create("Frame", {
+        Name = config.Name or "BentoGrid",
+        Size = config.Size or UDim2.new(1, 0, 0, 0),
+        AutomaticSize = config.AutomaticSize ~= false and Enum.AutomaticSize.Y or nil,
+        BackgroundTransparency = 1,
+        Parent = config.Parent
+    })
+    
+    -- Store grid configuration
+    local gridId = tostring(tick())
+    grid:SetAttribute("BentoColumns", columns)
+    grid:SetAttribute("BentoGap", gap)
+    grid:SetAttribute("BentoCellHeight", cellHeight)
+    grid:SetAttribute("BentoGridId", gridId)
+    
+    -- Track grid items
+    local gridItems = {}
+    local gridLayout = {} -- 2D array to track occupied cells
+    
+    -- Function to calculate and position items
+    local function updateLayout()
+        if not grid.Parent then return end
+        
+        local parentWidth = grid.AbsoluteSize.X
+        if parentWidth <= 0 then return end
+        
+        -- Calculate cell width dynamically
+        local actualCellWidth = math.floor((parentWidth - (gap * (columns - 1))) / columns)
+        
+        -- Reset grid layout
+        gridLayout = {}
+        local currentRow = 0
+        local rowHeights = {} -- Track height of each row
+        
+        -- Sort items by layout order
+        table.sort(gridItems, function(a, b)
+            return (a.LayoutOrder or 0) < (b.LayoutOrder or 0)
+        end)
+        
+        -- Place items in grid
+        for _, item in ipairs(gridItems) do
+            if not item.Parent then continue end
+            
+            local colSpan = item:GetAttribute("BentoColSpan") or 1
+            local rowSpan = item:GetAttribute("BentoRowSpan") or 1
+            
+            -- Find available position
+            local placed = false
+            local startRow = currentRow
+            local startCol = 0
+            
+            while not placed do
+                -- Check if position is available
+                local canPlace = true
+                
+                -- Check bounds
+                if startCol + colSpan > columns then
+                    startCol = 0
+                    startRow = startRow + 1
+                    continue
+                end
+                
+                -- Check if cells are occupied
+                for r = startRow, startRow + rowSpan - 1 do
+                    if not gridLayout[r] then
+                        gridLayout[r] = {}
+                    end
+                    for c = startCol, startCol + colSpan - 1 do
+                        if gridLayout[r][c] then
+                            canPlace = false
+                            break
+                        end
+                    end
+                    if not canPlace then break end
+                end
+                
+                if canPlace then
+                    -- Mark cells as occupied
+                    for r = startRow, startRow + rowSpan - 1 do
+                        for c = startCol, startCol + colSpan - 1 do
+                            gridLayout[r][c] = item
+                        end
+                    end
+                    
+                    -- Calculate position
+                    local x = startCol * (actualCellWidth + gap)
+                    local y = 0
+                    for row = 0, startRow - 1 do
+                        y = y + (rowHeights[row] or cellHeight) + gap
+                    end
+                    
+                    -- Set item size and position
+                    item.Size = UDim2.new(
+                        0, (actualCellWidth * colSpan) + (gap * (colSpan - 1)),
+                        0, (cellHeight * rowSpan) + (gap * (rowSpan - 1))
+                    )
+                    item.Position = UDim2.new(0, x, 0, y)
+                    
+                    -- Update row heights
+                    local itemHeight = (cellHeight * rowSpan) + (gap * (rowSpan - 1))
+                    for r = startRow, startRow + rowSpan - 1 do
+                        rowHeights[r] = math.max(rowHeights[r] or 0, itemHeight)
+                    end
+                    
+                    placed = true
+                    currentRow = startRow
+                else
+                    -- Try next column
+                    startCol = startCol + 1
+                    if startCol >= columns then
+                        startCol = 0
+                        startRow = startRow + 1
+                    end
+                end
+            end
+        end
+    end
+    
+    -- Update layout when size changes
+    local sizeConnection
+    sizeConnection = grid:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+        updateLayout()
+    end)
+    
+    -- Clean up connection when grid is destroyed
+    grid.AncestryChanged:Connect(function()
+        if not grid.Parent then
+            if sizeConnection then
+                sizeConnection:Disconnect()
+            end
+        end
+    end)
+    
+    -- Method to add item to grid
+    function grid:AddItem(item, colSpan, rowSpan, layoutOrder)
+        colSpan = colSpan or 1
+        rowSpan = rowSpan or 1
+        
+        item:SetAttribute("BentoColSpan", colSpan)
+        item:SetAttribute("BentoRowSpan", rowSpan)
+        item:SetAttribute("BentoGridId", gridId)
+        if layoutOrder then
+            item.LayoutOrder = layoutOrder
+        end
+        
+        item.Parent = grid
+        table.insert(gridItems, item)
+        
+        -- Update layout
+        task.spawn(function()
+            task.wait()
+            updateLayout()
+        end)
+    end
+    
+    -- Helper method to create card in grid
+    function grid:CreateCard(cardConfig)
+        cardConfig = cardConfig or {}
+        cardConfig.Parent = grid
+        cardConfig._BentoGrid = {
+            Id = gridId,
+            Columns = columns,
+            Gap = gap,
+            CellHeight = cellHeight
+        }
+        
+        local card = UIFramework.CreateCard(cardConfig)
+        self:AddItem(card, cardConfig.ColSpan or 1, cardConfig.RowSpan or 1, cardConfig.LayoutOrder)
+        return card
+    end
+    
+    -- Initial layout update
+    task.spawn(function()
+        task.wait(0.1)
+        updateLayout()
+    end)
+    
+    return grid
 end
 
 -- Create a button group (horizontal buttons)

@@ -97,46 +97,43 @@ UIFramework.Label.new({
 
 UIFramework.CreateSpacer({ Parent = dashboardTab })
 
--- Stats cards
-local statsContainer = UIFramework.Utilities.Create("Frame", {
-    Name = "StatsContainer",
-    Size = UDim2.new(1, 0, 0, 80),
-    BackgroundTransparency = 1,
+-- Stats cards with Bento Design Grid Layout
+local bentoGrid = UIFramework.CreateBentoGrid({
+    Name = "StatsBentoGrid",
+    Columns = 4,
+    Gap = UIFramework.Theme.Spacing.MD,
+    CellHeight = 100,
     Parent = dashboardTab
 })
 
-UIFramework.Utilities.ApplyListLayout(statsContainer, {
-    Direction = Enum.FillDirection.Horizontal,
-    Padding = UIFramework.Theme.Spacing.MD
-})
-
-local function createStatCard(name, value, icon, color)
-    local card = UIFramework.CreateCard({
-        Size = UDim2.new(0, 180, 0, 70),
-        Parent = statsContainer,
+local function createBentoStatCard(name, value, icon, color, colSpan, rowSpan)
+    local card = bentoGrid:CreateCard({
+        Name = name .. "Card",
+        ColSpan = colSpan or 1,
+        RowSpan = rowSpan or 1,
         AutoLayout = false
     })
     
     UIFramework.Utilities.Create("TextLabel", {
         Name = "Icon",
-        Size = UDim2.new(0, 32, 0, 32),
+        Size = UDim2.new(0, 40, 0, 40),
         Position = UDim2.new(0, 12, 0, 12),
         BackgroundTransparency = 1,
         Text = UIFramework.Icons.Get(icon),
         TextColor3 = color,
-        TextSize = 24,
+        TextSize = 28,
         Font = Enum.Font.GothamBold,
         Parent = card
     })
     
     UIFramework.Utilities.Create("TextLabel", {
         Name = "Value",
-        Size = UDim2.new(1, -60, 0, 24),
-        Position = UDim2.new(0, 52, 0, 10),
+        Size = UDim2.new(1, -60, 0, 28),
+        Position = UDim2.new(0, 60, 0, 12),
         BackgroundTransparency = 1,
         Text = tostring(value),
         TextColor3 = UIFramework.Theme.Colors.TextPrimary,
-        TextSize = 20,
+        TextSize = 22,
         Font = UIFramework.Theme.Typography.FontFamilyBold,
         TextXAlignment = Enum.TextXAlignment.Left,
         Parent = card
@@ -144,12 +141,12 @@ local function createStatCard(name, value, icon, color)
     
     UIFramework.Utilities.Create("TextLabel", {
         Name = "Name",
-        Size = UDim2.new(1, -60, 0, 16),
-        Position = UDim2.new(0, 52, 0, 36),
+        Size = UDim2.new(1, -60, 0, 18),
+        Position = UDim2.new(0, 60, 0, 42),
         BackgroundTransparency = 1,
         Text = name,
         TextColor3 = UIFramework.Theme.Colors.TextSecondary,
-        TextSize = 12,
+        TextSize = 13,
         Font = UIFramework.Theme.Typography.FontFamily,
         TextXAlignment = Enum.TextXAlignment.Left,
         Parent = card
@@ -158,10 +155,13 @@ local function createStatCard(name, value, icon, color)
     return card
 end
 
-createStatCard("Players Online", "1,234", "users", UIFramework.Theme.Colors.Primary)
-createStatCard("Total Revenue", "$5,678", "coins", UIFramework.Theme.Colors.Success)
-createStatCard("Active Games", "89", "gamepad", UIFramework.Theme.Colors.Warning)
-createStatCard("Server Status", "Online", "server", UIFramework.Theme.Colors.Info)
+-- Bento Design: Cards with varying sizes
+createBentoStatCard("Players Online", "1,234", "users", UIFramework.Theme.Colors.Primary, 1, 1)
+createBentoStatCard("Total Revenue", "$5,678", "coins", UIFramework.Theme.Colors.Success, 2, 1) -- Spans 2 columns
+createBentoStatCard("Active Games", "89", "gamepad", UIFramework.Theme.Colors.Warning, 1, 1)
+createBentoStatCard("Server Status", "Online", "server", UIFramework.Theme.Colors.Info, 1, 2) -- Spans 2 rows
+createBentoStatCard("Daily Active", "567", "chart-line", UIFramework.Theme.Colors.Accent, 1, 1)
+createBentoStatCard("Growth Rate", "+12.5%", "arrow-up", UIFramework.Theme.Colors.Success, 2, 1) -- Spans 2 columns
 
 -- ═══════════════════════════════════════════════════════════════
 -- TAB 2: PLAYER SETTINGS
@@ -769,7 +769,8 @@ local features = {
     { icon = "move", text = "Draggable - Move panel from anywhere" },
     { icon = "eye", text = "Transparency - Configurable panel transparency" },
     { icon = "palette", text = "Themes - 14 built-in color themes" },
-    { icon = "circle", text = "macOS Style - Circular minimize/close buttons" }
+    { icon = "circle", text = "macOS Style - Circular minimize/close buttons" },
+    { icon = "grid", text = "Bento Grid - Modern grid layout with flexible card sizes" }
 }
 
 UIFramework.CreateSection({
