@@ -375,8 +375,14 @@ function UIFramework.CreateBentoGrid(config)
         local parentWidth = grid.AbsoluteSize.X
         if parentWidth <= 0 then return end
         
+        -- Ensure all values are numbers
+        local numGap = type(gap) == "number" and gap or 10
+        local numColumns = type(columns) == "number" and columns or 4
+        local numCellHeight = type(cellHeight) == "number" and cellHeight or 120
+        
         -- Calculate cell width dynamically
-        local actualCellWidth = math.floor((parentWidth - (gap * (columns - 1))) / columns)
+        local actualCellWidth = math.floor((parentWidth - (numGap * (numColumns - 1))) / numColumns)
+        if actualCellWidth <= 0 then return end
         
         -- Reset grid layout
         gridLayout = {}
@@ -392,8 +398,12 @@ function UIFramework.CreateBentoGrid(config)
         for _, item in ipairs(gridItems) do
             if not item.Parent then continue end
             
-            local colSpan = item:GetAttribute("BentoColSpan") or 1
-            local rowSpan = item:GetAttribute("BentoRowSpan") or 1
+            local colSpan = tonumber(item:GetAttribute("BentoColSpan")) or 1
+            local rowSpan = tonumber(item:GetAttribute("BentoRowSpan")) or 1
+            
+            -- Ensure colSpan and rowSpan are valid numbers
+            if not colSpan or colSpan < 1 then colSpan = 1 end
+            if not rowSpan or rowSpan < 1 then rowSpan = 1 end
             
             -- Find available position
             local placed = false
@@ -405,7 +415,7 @@ function UIFramework.CreateBentoGrid(config)
                 local canPlace = true
                 
                 -- Check bounds
-                if startCol + colSpan > columns then
+                if startCol + colSpan > numColumns then
                     startCol = 0
                     startRow = startRow + 1
                     continue
@@ -434,21 +444,21 @@ function UIFramework.CreateBentoGrid(config)
                     end
                     
                     -- Calculate position
-                    local x = startCol * (actualCellWidth + gap)
+                    local x = startCol * (actualCellWidth + numGap)
                     local y = 0
                     for row = 0, startRow - 1 do
-                        y = y + (rowHeights[row] or cellHeight) + gap
+                        y = y + (rowHeights[row] or numCellHeight) + numGap
                     end
                     
                     -- Set item size and position
                     item.Size = UDim2.new(
-                        0, (actualCellWidth * colSpan) + (gap * (colSpan - 1)),
-                        0, (cellHeight * rowSpan) + (gap * (rowSpan - 1))
+                        0, (actualCellWidth * colSpan) + (numGap * (colSpan - 1)),
+                        0, (numCellHeight * rowSpan) + (numGap * (rowSpan - 1))
                     )
                     item.Position = UDim2.new(0, x, 0, y)
                     
                     -- Update row heights
-                    local itemHeight = (cellHeight * rowSpan) + (gap * (rowSpan - 1))
+                    local itemHeight = (numCellHeight * rowSpan) + (numGap * (rowSpan - 1))
                     for r = startRow, startRow + rowSpan - 1 do
                         rowHeights[r] = math.max(rowHeights[r] or 0, itemHeight)
                     end
@@ -458,7 +468,7 @@ function UIFramework.CreateBentoGrid(config)
                 else
                     -- Try next column
                     startCol = startCol + 1
-                    if startCol >= columns then
+                    if startCol >= numColumns then
                         startCol = 0
                         startRow = startRow + 1
                     end
